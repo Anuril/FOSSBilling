@@ -128,7 +128,7 @@ class Admin extends \Api_Abstract
         $model = $this->di['db']->findOne('ActivityClientEmail', 'id = ?', [$data['id']]);
 
         if (!$model instanceof \Model_ActivityClientEmail) {
-            throw new \Box_Exception('Email not found');
+            throw new \Box_Exception(':element: not found', [':element:' => __trans('Email')],701);
         }
 
         return $this->getService()->resend($model);
@@ -154,7 +154,7 @@ class Admin extends \Api_Abstract
         $model = $this->di['db']->findOne('ActivityClientEmail', 'id = ?', [$data['id']]);
 
         if (!$model instanceof \Model_ActivityClientEmail) {
-            throw new \Box_Exception('Email not found');
+            throw new \Box_Exception(':element: not found', [':element:' => __trans('Email')],701);
         }
 
         $id = $model->id;
@@ -232,7 +232,7 @@ class Admin extends \Api_Abstract
         $model = $this->di['db']->findOne('EmailTemplate', 'id = ?', [$data['id']]);
 
         if (!$model instanceof \Model_EmailTemplate) {
-            throw new \Box_Exception('Email template not found');
+            throw new \Box_Exception(':element: not found', [':element:' => __trans('Email template')],907);
         }
 
         $id = $model->id;

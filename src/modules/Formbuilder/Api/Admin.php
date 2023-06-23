@@ -76,7 +76,7 @@ class Admin extends \Api_Abstract
     {
         $service = $this->getService();
         if (!isset($data['type']) || !$service->typeValidation($data['type'])) {
-            throw new \Box_Exception('Form field type is not valid', null, 2684);
+            throw new \Box_Exception(':object: is not valid', [':object:'=> __trans('Form field type')], 1002);
         }
         if (isset($data['options']) && is_array($data['options']) && !$service->isArrayUnique($data['options'])) {
             throw new \Box_Exception('This input type must have unique values', null, 3658);
@@ -319,7 +319,7 @@ class Admin extends \Api_Abstract
         }
 
         if ('horizontal' != $data['type'] && 'default' != $data['type']) {
-            throw new \Box_Exception('Field type not supported', null, 3207);
+            throw new \Box_Exception('Field type not supported', null, 1002);
         }
 
         $service = $this->getService();

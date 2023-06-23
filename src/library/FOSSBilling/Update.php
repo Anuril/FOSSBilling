@@ -101,7 +101,7 @@ class Update implements InjectionAwareInterface
                     $releaseInfo = $response->toArray();
                 } catch (TransportExceptionInterface | HttpExceptionInterface $e) {
                     error_log($e->getMessage());
-                    throw new \Box_Exception('Failed to download the latest version information. Further details are available in the error log.');
+                    throw new Server_Exception('Failed to :action: :object:. Details: :error_details:', [':action:'=> __trans('download'), ':object:'=> __trans('the latest version information'), ':error_details:'=> __trans('Check the error log for more information.')], 1201);
                 }
 
                 return [
@@ -191,7 +191,7 @@ class Update implements InjectionAwareInterface
             fclose($fileHandler);
         } catch (TransportExceptionInterface | HttpExceptionInterface $e) {
             error_log($e->getMessage());
-            throw new \Box_Exception('Failed to download the update archive. Further details are available in the error log.');
+            throw new Server_Exception('Failed to :action: :object:. Details: :error_details:', [':action:'=> __trans('download'), ':object:'=> __trans('the update archive'), ':error_details:'=> __trans('Check the error log for more information.')], 1204);
         }
 
         // @TODO - Validate downloaded file hash.
@@ -204,7 +204,7 @@ class Update implements InjectionAwareInterface
             $zip->close();
         } catch (ZipException $e) {
             error_log($e->getMessage());
-            throw new \Box_Exception('Failed to extract file, please check file and folder permissions. Further details are available in the error log.');
+            throw new Server_Exception('Failed to :action: :object:'. Details: :error_details:, [':action:'=> __trans('download'), ':object:'=> __trans('the update archive'), ':error_details:'=> __trans('Check the error log for more information.')]], 1204);
         }
 
         // Apply system patches and migrate configuration file.

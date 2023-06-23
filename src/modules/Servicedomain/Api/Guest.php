@@ -97,11 +97,11 @@ class Guest extends \Api_Abstract
 
         $tld = $this->getService()->tldFindOneByTld($data['tld']);
         if (!$tld instanceof \Model_Tld) {
-            throw new \Box_Exception('Domain availability could not be determined. TLD is not active.');
+            throw new \Box_Exception('Domain availability could not be determined. TLD is not active.', null, 707);
         }
 
         if (!$this->getService()->isDomainAvailable($tld, $sld)) {
-            throw new \Box_Exception('Domain is not available.');
+            throw new \Box_Exception('Domain is not available.', null, 707);
         }
 
         return true;
@@ -129,7 +129,7 @@ class Guest extends \Api_Abstract
             throw new \Box_Exception('TLD is not active.');
         }
         if (!$this->getService()->canBeTransferred($tld, $data['sld'])) {
-            throw new \Box_Exception('Domain can not be transferred.');
+            throw new \Box_Exception(':object: can not :planned_action:', [':object:'=> __trans('Domain'), ':planned_action:'=> __trans('be transferred')], 403);
         }
 
         return true;

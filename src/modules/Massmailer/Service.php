@@ -156,7 +156,7 @@ class Service implements \FOSSBilling\InjectionAwareInterface
 
         $extensionService = $this->di['mod_service']('extension');
         if ($extensionService->isExtensionActive('mod', 'demo')) {
-            throw new \Box_Exception('Disabled for security reasons (Demo mode enabled)');
+            throw new \Box_Exception('Disabled for security reasons (Demo mode enabled)', null, 6752);
         }
 
         $mail = $this->di['mail'];

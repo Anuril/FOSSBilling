@@ -66,7 +66,7 @@ class Client extends \Api_Abstract
         $model = $this->getService()->findOneForClientById($this->getIdentity(), $data['id']);
 
         if (!$model instanceof \Model_ActivityClientEmail) {
-            throw new \Box_Exception('Email not found');
+            throw new \Box_Exception(':element: not found', [':element:' => __trans('Email')],701);
         }
 
         return $this->getService()->toApiArray($model);
@@ -91,7 +91,7 @@ class Client extends \Api_Abstract
 
         $model = $this->getService()->findOneForClientById($this->getIdentity(), $data['id']);
         if (!$model instanceof \Model_ActivityClientEmail) {
-            throw new \Box_Exception('Email not found');
+            throw new \Box_Exception(':element: not found', [':element:' => __trans('Email')],701);
         }
 
         return $this->getService()->resend($model);
@@ -116,7 +116,7 @@ class Client extends \Api_Abstract
 
         $model = $this->getService()->findOneForClientById($this->getIdentity(), $data['id']);
         if (!$model instanceof \Model_ActivityClientEmail) {
-            throw new \Box_Exception('Email not found');
+            throw new \Box_Exception(':element: not found', [':element:' => __trans('Email')],701);
         }
 
         return $this->getService()->rm($model);

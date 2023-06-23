@@ -136,11 +136,11 @@ class Service implements InjectionAwareInterface
         $text = preg_replace('~[^-\w]+~', '', $text);
 
         if (is_numeric(substr($text, 0, 1))) {
-            throw new \Box_Exception('Field name can not start with number.', null, 1649);
+            throw new \Box_Exception(':object: can not :planned_action:', [':object:'=> __trans('Field name'), ':planned_action:'=> __trans('start with a number')], 1002);
         }
 
         if (empty($text)) {
-            throw new \Box_Exception('Field name can not be empty. Please make sure it is not empty and does not contain special characters.', null, 3502);
+            throw new \Box_Exception('Field name can not be empty. Please make sure it is not empty and does not contain special characters.', null, 1002);
         }
 
         return $text;

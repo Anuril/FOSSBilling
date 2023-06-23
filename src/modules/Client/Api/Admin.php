@@ -159,7 +159,7 @@ class Admin extends \Api_Abstract
 
         $service = $this->getService();
         if ($service->emailAlreadyRegistered($data['email'])) {
-            throw new \Box_Exception('Email is already registered.');
+            throw new \Box_Exception('Email is already registered.', null, 1403);
         }
 
         $validator->isPasswordStrong($data['password']);
@@ -506,7 +506,7 @@ class Admin extends \Api_Abstract
         $model = $this->di['db']->getExistingModelById('ActivityClientHistory', $data['id']);
 
         if (!$model instanceof \Model_ActivityClientHistory) {
-            throw new \Box_Exception('Event not found');
+            throw new \Box_Exception(':element: not found', [':element:' => __trans('Event')],711);
         }
         $this->di['db']->trash($model);
 

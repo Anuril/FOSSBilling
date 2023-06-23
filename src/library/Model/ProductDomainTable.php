@@ -252,6 +252,6 @@ class Model_ProductDomainTable extends Model_ProductTable
 
     public function rm(Model_Product $product)
     {
-        throw new \Box_Exception('Domain product can not be removed.');
+        throw new \Box_Exception(':object: can not :planned_action:', [':object:'=> __trans('Domain product '), ':planned_action:'=> __trans('be removed')], 906);
     }
 }

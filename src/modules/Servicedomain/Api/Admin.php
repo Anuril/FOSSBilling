@@ -471,7 +471,7 @@ class Admin extends \Api_Abstract
         $s = $orderService->getOrderService($order);
 
         if (!$s instanceof \Model_ServiceDomain) {
-            throw new \Box_Exception('Domain order is not activated');
+            throw new \Box_Exception('Domain order is not activated',null , 709);
         }
 
         return $s;

@@ -85,7 +85,7 @@ class Guest extends \Api_Abstract
         $email = $this->di['tools']->validateAndSanitizeEmail($email);
         $email = strtolower(trim($email));
         if ($service->clientAlreadyExists($email)) {
-            throw new \Box_Exception('Email is already registered. You may want to login instead of registering.');
+            throw new \Box_Exception('Email is already registered. You may want to login instead of registering.', null, 1404);
         }
 
         $client = $service->guestCreateClient($data);
@@ -169,7 +169,7 @@ class Guest extends \Api_Abstract
 
         $c = $this->di['db']->findOne('Client', 'email = ?', [$data['email']]);
         if (!$c instanceof \Model_Client) {
-            throw new \Box_Exception('Email not found in our database');
+            throw new \Box_Exception(':element: not found in :location:',[':element:' => __trans('Email'), ':location:' => __trans('our Database')], 1405);
         }
 
         $hash = hash('sha256', time() . random_bytes(13));

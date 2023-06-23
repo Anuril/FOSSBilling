@@ -87,7 +87,7 @@ class UpdatePatcher implements InjectionAwareInterface
         try {
             $filesystem->dumpFile($configPath, $output);
         } catch (IOException $e) {
-            throw new \Box_Exception('Error when writing updated configuration file.');
+            throw new \Box_Exception('Error when writing updated configuration file.', null, 1203);
         }
     }
 

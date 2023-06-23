@@ -280,7 +280,7 @@ class Tools
 
         if (!filter_var(idn_to_ascii($email), FILTER_VALIDATE_EMAIL)) {
             if ($throw) {
-                throw new \Box_Exception('Email address is invalid');
+                throw new \Box_Exception(':element: is invalid', [':element:'=> __trans('Email address')], 53);
             } else {
                 return false;
             }

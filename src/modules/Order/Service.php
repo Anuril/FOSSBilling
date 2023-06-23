@@ -701,7 +701,7 @@ class Service implements InjectionAwareInterface
             if (method_exists($s, 'create') || method_exists($s, 'action_create')) {
                 $service = $this->_callOnService($order, \Model_ClientOrder::ACTION_CREATE);
                 if (!is_object($service)) {
-                    throw new \Box_Exception('Error creating ' . $order->service_type . ' service for order ' . $order->id);
+                    throw new \Box_Exception('Error creating ' . $order->service_type . ' service for order ' . $order->id, null, 709);
                 }
 
                 $order->service_id = $service->id;

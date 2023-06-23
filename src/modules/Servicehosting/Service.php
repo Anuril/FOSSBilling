@@ -49,10 +49,10 @@ class Service implements InjectionAwareInterface
             throw new \Box_Exception('Hosting product is not configured completely. Configure hosting plan for hosting product.', null, 702);
         }
         if (!isset($data['sld']) || empty($data['sld'])) {
-            throw new \Box_Exception('Domain name is not valid.', null, 703);
+            throw new \Box_Exception(':object: is not valid', [':object:'=> __trans('Domain name')], 707);
         }
         if (!isset($data['tld']) || empty($data['tld'])) {
-            throw new \Box_Exception('Domain extension is not valid.', null, 704);
+            throw new \Box_Exception(':object: is not valid', [':object:'=> __trans('Domain extension')], 707);
         }
     }
 
@@ -298,7 +298,7 @@ class Service implements InjectionAwareInterface
             !isset($data['tld']) || empty($data['tld']) ||
             !isset($data['sld']) || empty($data['sld'])
         ) {
-            throw new \Box_Exception('Domain sld or tld is missing');
+            throw new \Box_Exception(':object: is missing', [':object:'=> __trans('Domain sld or tld')], 707);
         }
 
         $sld = $data['sld'];

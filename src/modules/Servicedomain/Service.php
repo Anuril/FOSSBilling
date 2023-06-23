@@ -518,11 +518,11 @@ class Service implements \FOSSBilling\InjectionAwareInterface
     public function canBeTransferred(\Model_Tld $model, $sld)
     {
         if (empty($sld)) {
-            throw new \Box_Exception('Domain name is not valid');
+            throw new \Box_Exception(':object: is not valid', [':object:'=> __trans('Domain name')], 707);
         }
 
         if (!$model->allow_transfer) {
-            throw new \Box_Exception('Domain can not be transferred', null, 403);
+            throw new \Box_Exception(':object: can not :planned_action:', [':object:'=> __trans('Domain'), ':planned_action:'=> __trans('be transferred')], 403);
         }
 
         // @adapterAction
@@ -539,7 +539,7 @@ class Service implements \FOSSBilling\InjectionAwareInterface
     public function isDomainAvailable(\Model_Tld $model, $sld)
     {
         if (empty($sld)) {
-            throw new \Box_Exception('Domain name is not valid');
+            throw new \Box_Exception(':object: is not valid', [':object:'=> __trans('Domain name')], 707);
         }
 
         $validator = $this->di['validator'];
@@ -549,7 +549,7 @@ class Service implements \FOSSBilling\InjectionAwareInterface
         }
 
         if (!$model->allow_register) {
-            throw new \Box_Exception('Domain can not be registered', null, 403);
+            throw new \Box_Exception(':object: can not :planned_action:', [':object:'=> __trans('Domain'), ':planned_action:'=> __trans('be registered')], 403);
         }
 
         // @adapterAction

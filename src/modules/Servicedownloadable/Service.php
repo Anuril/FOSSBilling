@@ -165,7 +165,7 @@ class Service implements InjectionAwareInterface
     {
         $request = $this->di['request'];
         if (0 == $request->hasFiles()) {
-            throw new \Box_Exception('Error uploading file');
+            throw new \Box_Exception('Error uploading file', null, 710);
         }
         $files = $request->getUploadedFiles();
         $file = $files[0];
@@ -196,7 +196,7 @@ class Service implements InjectionAwareInterface
     {
         $request = $this->di['request'];
         if (0 == $request->hasFiles()) {
-            throw new \Box_Exception('Error uploading file');
+            throw new \Box_Exception('Error uploading file', null, 710);
         }
         $productService = $this->di['mod_service']('product');
         $files = $request->getUploadedFiles();

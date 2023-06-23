@@ -35,7 +35,7 @@ class Admin extends \Api_Abstract
         $model = $this->di['db']->getExistingModelById('Product', $data['id'], 'Product not found');
 
         if (!isset($_FILES['file_data'])) {
-            throw new \Box_Exception('File was not uploaded');
+            throw new \Box_Exception('File was not uploaded', null, 710);
         }
 
         $service = $this->getService();

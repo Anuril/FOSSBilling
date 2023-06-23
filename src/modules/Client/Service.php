@@ -635,7 +635,7 @@ class Service implements InjectionAwareInterface
             && isset($config['disable_change_email'])
             && $config['disable_change_email']
         ) {
-            throw new \Box_Exception('Email can not be changed');
+            throw new \Box_Exception(':object: can not :planned_action:', [':object:'=> __trans('Email'), ':planned_action:'=> __trans('be changed')], 701);
         }
 
         return true;

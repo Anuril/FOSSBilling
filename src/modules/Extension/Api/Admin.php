@@ -262,7 +262,7 @@ class Admin extends \Api_Abstract
         $service = $this->getService();
         $ext = $service->findExtension($data['type'], $data['id']);
         if (!$ext instanceof \Model_Extension) {
-            throw new \Box_Exception('Extension not found');
+            throw new \Box_Exception(':element: not found', [':element:' => __trans('Extension')],5002);
         }
 
         return $ext;

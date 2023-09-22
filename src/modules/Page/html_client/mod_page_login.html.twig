@@ -53,7 +53,9 @@
         <li><a href="{{ 'signup'|link }}"><small>{{ 'Signup'|trans }}</small></a></li>
         {% endif %}
 
-        <li><a href="{{ 'login'|link }}"><small>{{ 'Login'|trans }}</small></a></li>
+        {% if settings.show_password_reset_link%}
+        <li><a href="{{ 'password-reset'|link }}"><small>{{ 'Forgot password?'|trans }}</small></a></li>
+        {% endif %}
     </ul>
     {% endif %}
 </section>

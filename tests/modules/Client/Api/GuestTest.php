@@ -243,7 +243,7 @@ class GuestTest extends \BBTestCase
     
         // Specify that 'findOne' will be called exactly twice
         $dbMock->expects($this->exactly(2))->method('findOne')
-            ->willReturnOnConsecutiveCalls($modelClient, $modelPasswordReset);
+            ->willReturnOnConsecutiveCalls($modelClient, null);
     
         $dbMock->expects($this->once())
             ->method('dispense')->will($this->returnValue($modelPasswordReset));

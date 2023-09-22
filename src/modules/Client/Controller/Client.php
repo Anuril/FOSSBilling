@@ -10,6 +10,8 @@
 
 namespace Box\Mod\Client\Controller;
 
+use Error;
+
 class Client implements \FOSSBilling\InjectionAwareInterface
 {
     protected ?\Pimple\Container $di = null;
@@ -76,6 +78,7 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         // Chech if the hash is valid
         // Call confirm_reset_calid API and if true, then render the template, otherwise redirect to login page
         $result = $api->guest_pwreset_valid($data);
+        error_log("Check Hash Result: " . $result);
         if ($result) {
             return $app->render($template);
         } else {

@@ -239,10 +239,15 @@ class GuestTest extends \BBTestCase
         $modelPasswordReset = new \Model_ClientPasswordReset();
         $modelPasswordReset->loadBean(new \DummyBean());
 
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
-        $dbMock->expects($this->once())
+        // Expect the first call for 'Client' and return the client model
+        $dbMock->expects($this->at(0))
             ->method('findOne')->with($this->equalTo('Client'), $this->equalTo('email = ?'), $this->equalTo([$data['email']]))
             ->will($this->returnValue($modelClient));
+
+        // Expect the second call for 'ClientPasswordReset' and return null (no recent reset request)
+        $dbMock->expects($this->at(1))
+            ->method('findOne')->with($this->equalTo('ClientPasswordReset'), $this->equalTo('client_id = ?'), $this->equalTo([$modelClient->id]))
+            ->will($this->returnValue(null));
 
         $dbMock->expects($this->once())
             ->method('dispense')->will($this->returnValue($modelPasswordReset));

@@ -700,7 +700,7 @@ class Service implements InjectionAwareInterface
             throw new \Box_Exception('The link have expired or you have already confirmed password reset.');
         }
 
-        $c = $this->di['db']->findOne('Client', 'id = ?', $reset->client_id]);
+        $c = $this->di['db']->findOne('Client', 'id = ?', $reset->client_id);
 
         // Return the Client ID if the reset request is valid, otherwise return false
         if (strtotime($reset->created_at) - time() + 900 < 0) {

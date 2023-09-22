@@ -187,7 +187,7 @@
 
             elem.val(total);
             // Check or uncheck the checkbox based on the setup_price or bill_price
-            if (s !== 0 || p !== 0) {
+            if (s !== 0.00 || p !== 0.00) {
                 row.find('input.form-check-input[type="checkbox"]').prop('checked', true);
             } else {
                 row.find('input.form-check-input[type="checkbox"]').prop('checked', false);
@@ -198,21 +198,6 @@
             $('table.pp tbody').hide();
             $('table.pp tbody.' + $(this).val()).show();
         });
-
-        // Check if the value is not 0
-        if ($(this).val() != 0 && $(this).val() != '') {
-            // Find the closest tr element, then find the checkbox within it and set it to checked
-            $(this).closest('tr').find('.form-check-input').prop('checked', true);
-        } else {
-            // If both setup_price and bill_price are 0 or empty, uncheck the checkbox
-            let $row = $(this).closest('tr');
-            let setupPrice = $row.find('.setup_price').val();
-            let billPrice = $row.find('.bill_price').val();
-
-            if ((setupPrice == 0 || setupPrice == '') && (billPrice == 0 || billPrice == '')) {
-                $row.find('.form-check-input').prop('checked', false);
-            }
-        }
     });
 
     function countTotal(p, s) {

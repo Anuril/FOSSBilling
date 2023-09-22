@@ -186,7 +186,14 @@ class Guest extends \Api_Abstract
             'code' => 'mod_client_password_reset_request',
             'hash' => $reset->hash,
         ];
-        $this->di['mod_service']('email')->sendTemplate($email);
+        // Check if the client password reset has been updated in the last minute
+        if (strtotime($reset->updated_at) - time() + 60 < 0) {
+            $this->di['mod_service']('email')->sendTemplate($email);
+        }
+        
+        // update the updated_at field
+        $reset->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($reset);
     
         $this->di['logger']->info('Client requested password reset. Sent to email %s', $c->email);
     

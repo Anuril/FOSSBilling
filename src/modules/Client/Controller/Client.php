@@ -75,7 +75,7 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         
         // Chech if the hash is valid
         // Call confirm_reset_calid API and if true, then render the template, otherwise redirect to login page
-        $result = $api->confirm_reset_valid($data);
+        $result = $api->pwreset_valid($data);
         if ($result) {
             return $app->render($template);
         } else {

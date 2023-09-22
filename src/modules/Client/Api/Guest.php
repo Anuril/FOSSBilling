@@ -201,7 +201,7 @@ class Guest extends \Api_Abstract
      *
      * @throws \Box_Exception
      */
-    public function confirm_reset_valid($data)
+    public function pwreset_valid($data)
     {
         $required = [
             'hash' => 'Hash required',

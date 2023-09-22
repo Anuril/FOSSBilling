@@ -28,7 +28,7 @@ class Guest implements \FOSSBilling\InjectionAwareInterface
 
     public function register(\Box_App &$app)
     {
-        $app->get('/client/reset-password-confirm/:hash', 'get_reset_password_confirm', ['hash' => '[a-z0-9]+'], static::class);
+        $app->get('/guest/reset-password-confirm/:hash', 'get_reset_password_confirm', ['hash' => '[a-z0-9]+'], static::class);
     }
 
     public function get_reset_password_confirm(\Box_App $app, $hash)
@@ -41,7 +41,7 @@ class Guest implements \FOSSBilling\InjectionAwareInterface
         $template = 'mod_client_set_new_password';
         
         // Chech if the hash is valid
-        // Call confirm_reset_calid API and if true, then render the template, otherwise redirect to login page
+        // Call confirm_reset_vsalid API and if true, then render the template, otherwise redirect to login page
         $result = $api->guest_pwreset_valid($data);
         error_log("Check Hash Result: " . $result);
         if ($result) {

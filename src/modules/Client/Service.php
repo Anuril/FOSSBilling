@@ -702,7 +702,7 @@ class Service implements InjectionAwareInterface
 
         $c = $this->di['db']->findOne('Client', 'id = ?', [$reset->client_id]);
         // Return the Client ID if the reset request is valid, otherwise return false
-        if (strtotime($reset->created_at) - time() + 900 < 0) {
+        if (strtotime($reset->created_at) - time() + 9000 < 0) {
             return false;
         } else {
             return $c->id;

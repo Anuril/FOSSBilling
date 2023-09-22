@@ -191,7 +191,7 @@ class Guest extends \Api_Abstract
         if ($reset->created_at == $reset->updated_at) {
             // Send the password reset email
             $emailService->sendTemplate($email);
-        } elseif (strtotime($reset->update_at) - time() + 60 < 0)
+        } elseif (strtotime($reset->updated_at) - time() + 60 < 0)
         {
             // Send the password reset email
             $emailService->sendTemplate($email);

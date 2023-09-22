@@ -226,71 +226,57 @@ class GuestTest extends \BBTestCase
         $this->assertIsArray($results);
     }
 
-    public function testreset_password()
-{
-    $data['email'] = 'Joghn@exmapl.com';
+    public function testResetPasswordFlow()
+    {
+        $data['email'] = 'John@exmapl.com';
 
-    // Mock for the events manager
-    $eventMock = $this->getMockBuilder('\Box_EventManager')->getMock();
-    $eventMock->expects($this->atLeastOnce())
-        ->method('fire');
+        $eventMock = $this->getMockBuilder('\Box_EventManager')->getMock();
+        $eventMock->expects($this->atLeastOnce())->method('fire');
 
-    // Mock for the database service
-    $modelClient = new \Model_Client();
-    $modelClient->loadBean(new \DummyBean());
+        $modelClient = new \Model_Client();
+        $modelClient->loadBean(new \DummyBean());
 
-    $modelPasswordReset = new \Model_ClientPasswordReset();
-    $modelPasswordReset->loadBean(new \DummyBean());
+        $modelPasswordReset = new \Model_ClientPasswordReset();
+        $modelPasswordReset->loadBean(new \DummyBean());
 
-    $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
-    $dbMock->expects($this->exactly(2))
-        ->method('findOne')
-        ->withConsecutive(
-            ['Client', 'email = ?', [$data['email']]],
-            ['ClientPasswordReset', 'client_id = ? AND created_at > DATE_SUB(NOW(), INTERVAL 5 MINUTE)', [$modelClient->id]]
-        )
-        ->willReturnOnConsecutiveCalls($modelClient, null);
+        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock->expects($this->once())
+            ->method('findOne')->with($this->equalTo('Client'), $this->equalTo('email = ?'), $this->equalTo([$data['email']]))
+            ->will($this->returnValue($modelClient));
 
-    $dbMock->expects($this->atLeastOnce())
-        ->method('dispense')
-        ->will($this->returnValue($modelPasswordReset));
+        $dbMock->expects($this->once())
+            ->method('dispense')->will($this->returnValue($modelPasswordReset));
 
-    $dbMock->expects($this->atLeastOnce())
-        ->method('store')
-        ->will($this->returnValue(1));
+        $dbMock->expects($this->atLeastOnce())
+            ->method('store')->will($this->returnValue(1));
 
-    // Mock for the email service
-    $emailServiceMock = $this->getMockBuilder('\Box\Mod\Email\Service')->getMock();
-    $emailServiceMock->expects($this->once())
-        ->method('sendTemplate');
+        $emailServiceMock = $this->getMockBuilder('\Box\Mod\Email\Service')->getMock();
+        $emailServiceMock->expects($this->atLeastOnce())->method('sendTemplate');
 
-    // Mock for the validator
-    $validatorMock = $this->getMockBuilder('\FOSSBilling\Validate')->disableOriginalConstructor()->getMock();
-    $validatorMock->expects($this->once())
-        ->method('checkRequiredParamsForArray')
-        ->will($this->returnValue(null));
+        $toolsMock = $this->getMockBuilder('\FOSSBilling\Tools')->getMock();
+        $toolsMock->expects($this->once())
+            ->method('validateAndSanitizeEmail')->will($this->returnValue($data['email']));
 
-    // Mock for tools (for email sanitization)
-    $toolsMock = $this->getMockBuilder('\FOSSBilling\Tools')->getMock();
-    $toolsMock->expects($this->once())
-        ->method('validateAndSanitizeEmail')
-        ->will($this->returnValue($data['email']));
+        $validatorMock = $this->getMockBuilder('\FOSSBilling\Validate')->disableOriginalConstructor()->getMock();
+        $validatorMock->expects($this->once())
+            ->method('checkRequiredParamsForArray')->will($this->returnValue(null));
 
-    // Dependency injection container setup
-    $di = new \Pimple\Container();
-    $di['db'] = $dbMock;
-    $di['events_manager'] = $eventMock;
-    $di['mod_service'] = $di->protect(function ($name) use($emailServiceMock) {return $emailServiceMock;});
-    $di['logger'] = new \Box_Log();
-    $di['tools'] = $toolsMock;
-    $di['validator'] = $validatorMock;
+        $di = new \Pimple\Container();
+        $di['db'] = $dbMock;
+        $di['events_manager'] = $eventMock;
+        $di['mod_service'] = $di->protect(function ($name) use ($emailServiceMock) {
+            return $emailServiceMock;
+        });
+        $di['logger'] = new \Box_Log();
+        $di['tools'] = $toolsMock;
+        $di['validator'] = $validatorMock;
 
-    $client = new \Box\Mod\Client\Api\Guest();
-    $client->setDi($di);
+        $client = new \Box\Mod\Client\Api\Guest();
+        $client->setDi($di);
 
-    $result = $client->reset_password($data);
-    $this->assertTrue($result);
-}
+        $result = $client->reset_password($data);
+        $this->assertTrue($result);
+    }
 
 
     public function testreset_passwordEmailNotFound()

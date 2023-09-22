@@ -228,7 +228,7 @@ class Guest extends \Api_Abstract
         // send email
         $email = [];
         $email['to_client'] = $c->id;
-        $email['code'] = 'mod_client_password_reset_approve';
+        $email['code'] = 'mod_client_password_reset_information';
         $emailService = $this->di['mod_service']('email');
         $emailService->sendTemplate($email);
 
@@ -236,18 +236,6 @@ class Guest extends \Api_Abstract
         $this->di['events_manager']->fire(['event' => 'onAfterClientProfilePasswordChange', 'params' => ['id' => $c->id]]);
 
         return true;
-                // TODO: send email to inform client about password change.
-/*         $email = [];
-        $email['to_client'] = $reset->client_id;
-        $email['code'] = 'mod_client_password_reset_approve';
-        $email['password'] = $new_pass;
-        $emailService = $this->di['mod_service']('email');
-        $emailService->sendTemplate($email);
-
-        $this->di['db']->trash($reset);
-        $this->di['logger']->info('Client password reset request was approved');
- */
-
     }
 
     /**

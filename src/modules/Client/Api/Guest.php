@@ -194,9 +194,6 @@ class Guest extends \Api_Abstract
     }
     
 
-
-
-
     public function update_password($data)
     {
        $required = [
@@ -213,7 +210,7 @@ class Guest extends \Api_Abstract
             throw new \Box_Exception('Passwords do not match');
         }
 
-        $reset = $this->di['db']->findOne('ClientPasswordReset', 'hash = ?', [$data['code']]);
+        $reset = $this->di['db']->findOne('ClientPasswordReset', 'hash = ?', [$data['hash']]);
         if (!$reset instanceof \Model_ClientPasswordReset) {
             throw new \Box_Exception('The link has expired or you have already reset your password.');
         }

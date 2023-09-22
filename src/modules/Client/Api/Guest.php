@@ -201,7 +201,7 @@ class Guest extends \Api_Abstract
             'password' => 'Password required',
             'password_confirm' => 'Password confirmation required',
         ];
-        $this->di['events_manager']->fire(['event' => 'onBeforeClientProfilePasswordChange', 'params' => $event_params]);
+        $this->di['events_manager']->fire(['event' => 'onBeforeClientProfilePasswordSet', 'params' => $data['hash']]);
 
         $validator = $this->di['validator'];
         $validator->checkRequiredParamsForArray($required, $data);
@@ -233,7 +233,7 @@ class Guest extends \Api_Abstract
         $emailService->sendTemplate($email);
 
         $this->di['db']->trash($reset);
-        $this->di['events_manager']->fire(['event' => 'onAfterClientProfilePasswordChange', 'params' => ['id' => $client->id]]);
+        $this->di['events_manager']->fire(['event' => 'onAfterClientProfilePasswordChange', 'params' => ['id' => $c->id]]);
 
         return true;
                 // TODO: send email to inform client about password change.

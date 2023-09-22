@@ -226,7 +226,7 @@ class GuestTest extends \BBTestCase
         $this->assertIsArray($results);
     }
 
-    public function testResetPasswordFlow()
+    public function testResetPasswordNewFlow()
     {
         $data['email'] = 'John@exmapl.com';
 
@@ -238,6 +238,8 @@ class GuestTest extends \BBTestCase
 
         $modelPasswordReset = new \Model_ClientPasswordReset();
         $modelPasswordReset->loadBean(new \DummyBean());
+
+        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
 
         // Expect the first call for 'Client' and return the client model
         $dbMock->expects($this->at(0))
@@ -282,6 +284,7 @@ class GuestTest extends \BBTestCase
         $result = $client->reset_password($data);
         $this->assertTrue($result);
     }
+
 
 
     public function testreset_passwordEmailNotFound()

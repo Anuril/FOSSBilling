@@ -28,6 +28,7 @@ class Client implements \FOSSBilling\InjectionAwareInterface
 
     public function register(\Box_App &$app)
     {
+        $app->get('/client/reset-password-confirm/:hash', 'get_reset_password_confirm', ['hash' => '[a-z0-9]+'], static::class);
         $app->get('/client', 'get_client_index', [], static::class);
         $app->get('/client/logout', 'get_client_logout', [], static::class);
         $app->get('/client/:page', 'get_client_page', ['page' => '[a-z0-9-]+'], static::class);
@@ -63,5 +64,24 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         $template = 'mod_client_' . $page;
 
         return $app->render($template);
+    }
+    public function get_reset_password_confirm(\Box_App $app, $hash)
+    {
+        $api = $this->di['api_guest'];
+        $this->di['events_manager']->fire(['event' => 'onBeforePasswordResetClient']);
+        $data = [
+            'hash' => $hash,
+        ];
+        $template = 'mod_client_set_new_password';
+        
+        // Chech if the hash is valid
+        // Call confirm_reset_vsalid API and if true, then render the template, otherwise redirect to login page
+        $result = $api->guest_pwreset_valid($data);
+        error_log("Check Hash Result: " . $result);
+        if ($result) {
+            return $app->render($template);
+        } else {
+            $app->redirect('/client/login');
+        }
     }
 }

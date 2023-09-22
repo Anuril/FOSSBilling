@@ -66,7 +66,7 @@ class Client implements \FOSSBilling\InjectionAwareInterface
 
     public function get_reset_password_confirm(\Box_App $app, $hash)
     {
-        $api = $this->di['api_guest'];
+        $api = $this->di['api_client'];
         $this->di['events_manager']->fire(['event' => 'onBeforePasswordResetClient']);
         $data = [
             'hash' => $hash,
@@ -75,7 +75,7 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         
         // Chech if the hash is valid
         // Call confirm_reset_calid API and if true, then render the template, otherwise redirect to login page
-        $result = $api->pwreset_valid($data);
+        $result = $api->guest_pwreset_valid($data);
         if ($result) {
             return $app->render($template);
         } else {

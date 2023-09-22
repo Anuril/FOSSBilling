@@ -71,7 +71,15 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         $data = [
             'hash' => $hash,
         ];
-        $api->client_confirm_reset($data);
-        $app->redirect('/login');
+        $template = 'mod_client_set_new_password';
+        
+        // Chech if the hash is valid
+        // Call confirm_reset_calid API and if true, then render the template, otherwise redirect to login page
+        $result = $api->confirm_reset_valid($data);
+        if ($result) {
+            return $app->render($template);
+        } else {
+            $app->redirect('/client/login');
+        }
     }
 }

@@ -77,11 +77,11 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         // Chech if the hash is valid
         // Call confirm_reset_vsalid API and if true, then render the template, otherwise redirect to login page
         $result = $service->pwreset_valid($data);
-        error_log("Check Hash Result: " . $result);
+        error_log("Result: " . print_r($result, true));
         if ($result) {
             return $app->render($template);
         } else {
-            $app->redirect('/client/login');
+            $app->redirect('/login');
         }
     }
 }

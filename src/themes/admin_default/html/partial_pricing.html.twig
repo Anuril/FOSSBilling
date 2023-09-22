@@ -186,6 +186,12 @@
             var elem = row.find('input.total');
 
             elem.val(total);
+            // Check or uncheck the checkbox based on the setup_price or bill_price
+            if (s !== 0 || p !== 0) {
+                row.find('input.form-check-input[type="checkbox"]').prop('checked', true);
+            } else {
+                row.find('input.form-check-input[type="checkbox"]').prop('checked', false);
+            }
         }).trigger('keyup');
 
         $('.pp_type input').on('click', function() {

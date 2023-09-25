@@ -85,11 +85,26 @@ class Payment_Adapter_Custom
         $invoice = $this->di['db']->getExistingModelById('Invoice', $tx->invoice_id);
         $gateway = $this->di['db']->getExistingModelById('Gateway', $tx->$gateway_id);
         error_log('loaded models');
-        $clientService = $this->di['mod_service']('Client');
+        try {
+            $clientService = $this->di['mod_service']('Client');
+        } catch (\Exception $e) {
+            error_log('Error loading client service: ' . $e->getMessage());
+            return false;
+        }
         error_log('loaded client service');
-        $client = $clientService->get(['id' => $invoice->client_id]);
+        try {
+            $client = $clientService->get(['id' => $invoice->client_id]);
+        } catch (\Exception $e) {
+            error_log('Error loading client: ' . $e->getMessage());
+            return false;
+        }
         error_log('loaded client: ' . print_r($client, true));
-        $invoiceService = $this->di['mod_service']('Invoice');
+        try {
+            $invoiceService = $this->di['mod_service']('Invoice');
+        } catch (\Exception $e) {
+            error_log('Error loading invoice service: ' . $e->getMessage());
+            return false;
+        }
         $invoiceTotal = $invoiceService->getTotalWithTax($invoice);
         error_log('loaded invoice. Calculated Total: ' . $invoiceTotal);
         $tx_desc = $gateway->title . ' transaction No: ' . $tx->txn_id;

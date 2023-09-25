@@ -83,15 +83,14 @@ class Admin extends \Api_Abstract
                 'txn_id'        =>  $data['transactionId'],
             ]);
             
-            try
-            {
-            $transactionService->processTransaction($newtx);
-            return true
-            }
-            catch (\Exception $e)
-            {
+            try {
+                $transactionService->processTransaction($newtx);
+                return true;
+            } catch (\Exception $e) {
                 $this->di['logger']->error('Error processing transaction: '.$e->getMessage());
+                return false;
             }
+            
 
         }
         return $this->getService()->markAsPaid($invoice, $charge, $execute);

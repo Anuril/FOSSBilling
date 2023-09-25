@@ -79,16 +79,17 @@ class Payment_Adapter_Custom
 
     public function processTransaction($api_admin, $id, $data, $gateway_id)
     {
-
+        error_log('Start processTransaction for transaction id: ' . $id);
         $tx      = $this->di['db']->getExistingModelById('Transaction', $id);
         $invoice = $this->di['db']->getExistingModelById('Invoice', $tx->invoice_id);
         $gateway = $this->di['db']->getExistingModelById('Gateway', $tx->$gateway_id);
-                
+        error_log('loaded models');
         $clientService = $this->di['mod_service']('client');
         $client = $clientService->get(['id' => $invoice->client_id]);
+        error_log('loaded client service');
         $invoiceService = $this->di['mod_service']('Invoice');
         $invoiceTotal = $invoiceService->getTotalWithTax($invoice);
-        error_log('invoiceTotal: ' . $invoiceTotal);
+        error_log('loaded invoice. Calculated Total: ' . $invoiceTotal);
         $tx_desc = $gateway->title . ' transaction No: ' . $tx->txn_id;
         $clientService->addFunds($client, $invoiceTotal, $tx_desc, []);
     

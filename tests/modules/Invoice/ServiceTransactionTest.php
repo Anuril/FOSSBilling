@@ -524,6 +524,7 @@ class ServiceTransactionTest extends \BBTestCase
         $di['db']          = $dbMock;
         $di['mod_service'] = $di->protect(function () use ($payGatewayService) { return $payGatewayService; });
         $di['api_admin']   = new \Api_Handler(new \Model_Admin());
+        $di['api_system']  = new \Api_Handler(new \Model_Admin());
         $this->service->setDi($di);
 
         $this->expectException(\Box_Exception::class);

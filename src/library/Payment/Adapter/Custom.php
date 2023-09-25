@@ -85,7 +85,7 @@ class Payment_Adapter_Custom
         $invoice = $this->di['db']->getExistingModelById('Invoice', $tx->invoice_id);
         $gateway = $this->di['db']->getExistingModelById('Gateway', $tx->$gateway_id);
         error_log('loaded models');
-        $clientService = $this->di['mod_service']('client');
+        $clientService = $this->di['mod_service']('Client');
         $client = $clientService->get(['id' => $invoice->client_id]);
         error_log('loaded client service');
         $invoiceService = $this->di['mod_service']('Invoice');

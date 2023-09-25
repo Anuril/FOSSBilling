@@ -82,9 +82,20 @@ class Payment_Adapter_Custom
         error_log('Start processTransaction for transaction id: ' . $id);
         $tx      = $this->di['db']->getExistingModelById('Transaction', $id);
         error_log('loaded transaction: ' . $tx->id);
-        $invoice = $this->di['db']->getExistingModelById('Invoice', $tx->invoice_id);
-        $gateway = $this->di['db']->getExistingModelById('Gateway', $tx->$gateway_id);
-        error_log('loaded models');
+        try {
+            $invoice = $this->di['db']->getExistingModelById('Invoice', $tx->invoice_id);
+            error_log('loaded invoice: ' . $invoice->id);
+        } catch (\Exception $e) {
+            error_log('Error loading invoice: ' . $e->getMessage());
+            return false;
+        }
+        try {
+            $gateway = $this->di['db']->getExistingModelById('Gateway', $tx->$gateway_id);
+            error_log('loaded models');
+        } catch (\Exception $e) {
+            error_log('Error loading gateway: ' . $e->getMessage());
+            return false;
+        }
         try {
             $clientService = $this->di['mod_service']('Client');
         } catch (\Exception $e) {

@@ -77,7 +77,6 @@ class Admin extends \Api_Abstract
                 'bb_invoice_id'    =>  $invoice->id,
                 'gateway_id'    =>  $invoice->gateway_id,
                 'bb_gateway_id'    =>  $invoice->gateway_id,
-                'amount'        =>  $invoiceTotal,
                 'currency'      =>  $invoice->currency,
                 'status'        =>  'received',
                 'txn_id'        =>  $data['transactionId'],

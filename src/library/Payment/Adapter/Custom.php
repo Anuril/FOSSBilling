@@ -90,7 +90,7 @@ class Payment_Adapter_Custom
             return false;
         }
         try {
-            $gateway = $this->di['db']->getExistingModelById('PayGateway', $tx->$gateway_id);
+            $gateway = $this->di['db']->load('PayGateway', $tx->gateway_id);
             error_log('loaded models');
         } catch (\Exception $e) {
             error_log('Error loading gateway: ' . $e->getMessage());

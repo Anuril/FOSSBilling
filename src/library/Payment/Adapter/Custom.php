@@ -113,6 +113,7 @@ class Payment_Adapter_Custom
         $tx->
         $tx->updated_at = date('Y-m-d H:i:s');
         $this->di['db']->store($tx);
+        return $true
     }
 
 }

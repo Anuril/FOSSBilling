@@ -84,13 +84,12 @@ class Admin extends \Api_Abstract
             ]);
             
             try {
-                $transactionService->processTransaction($newtx);
-                return true;
-            } catch (\Exception $e) {
-                $this->di['logger']->error('Error processing transaction: '.$e->getMessage());
-                return false;
+            $transactionService->processTransaction($newtx);
+            return true;
+            } catch (\Exception $e)
+            {
+                $this->di['logger']->info('Error processing transaction: '.$e->getMessage());
             }
-            
 
         }
         return $this->getService()->markAsPaid($invoice, $charge, $execute);

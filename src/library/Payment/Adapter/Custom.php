@@ -76,4 +76,40 @@ class Payment_Adapter_Custom
     {
         return true;
     }
+
+    public function processTransaction($api_admin, $id, $data, $gateway_id)
+    {
+
+        $tx      = $this->di['db']->getExistingModelById('Transaction', $id);
+        $invoice = $this->di['db']->getExistingModelById('Invoice', $tx->invoice_id);
+        $payGateway = $this->gateway_get($gateway_id);
+        $clientService = $this->di['mod_service']('client');
+        $client = $clientService->get(['id' => $invoice->client_id]);
+        $invoiceService = $this->di['mod_service']('Invoice');
+        $invoiceTotal = $invoiceService->getTotalWithTax($invoice);
+        $chargeInfo = [
+            'amount'        =>  $invoiceTotal,
+            'description'   =>  $payGateway['title'] . ' transaction No: ' . $data['transactionId'],
+            'type'          =>  'custom',
+        ];
+
+        $clientService->addFunds($client, $chargeInfo['amount'], $chargeInfo['description'], $chargeInfo);
+        
+        $charge['status'] = 'succeeded';
+
+
+        $invoiceService = $this->di['mod_service']('Invoice');
+        $invoiceService->markAsPaid($invoice, true, $execute);
+        
+        $paymentStatus = match ($charge->status) {
+            'succeeded' => 'processed',
+            'pending' => 'received',
+            'failed' => 'error',
+        };
+
+        $tx->status = $paymentStatus;
+        $tx->updated_at = date('Y-m-d H:i:s');
+        $this->di['db']->store($tx);
+    }
+
 }

@@ -82,14 +82,15 @@ class Payment_Adapter_Custom
 
         $tx      = $this->di['db']->getExistingModelById('Transaction', $id);
         $invoice = $this->di['db']->getExistingModelById('Invoice', $tx->invoice_id);
-        $payGateway = $this->gateway_get($gateway_id);
+        $gateway = $this->di['db']->getExistingModelById('Gateway', $tx->$gateway_id);
+                
         $clientService = $this->di['mod_service']('client');
         $client = $clientService->get(['id' => $invoice->client_id]);
         $invoiceService = $this->di['mod_service']('Invoice');
         $invoiceTotal = $invoiceService->getTotalWithTax($invoice);
         $chargeInfo = [
             'amount'        =>  $invoiceTotal,
-            'description'   =>  $payGateway['title'] . ' transaction No: ' . $data['transactionId'],
+            'description'   =>  $gateway['title'] . ' transaction No: ' . $data['transactionId'],
             'type'          =>  'custom',
         ];
 
@@ -108,6 +109,8 @@ class Payment_Adapter_Custom
         };
 
         $tx->status = $paymentStatus;
+        $tx->amount = $chargeInfo['amount'];
+        $tx->
         $tx->updated_at = date('Y-m-d H:i:s');
         $this->di['db']->store($tx);
     }

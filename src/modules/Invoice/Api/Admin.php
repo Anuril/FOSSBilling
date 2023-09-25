@@ -87,9 +87,10 @@ class Admin extends \Api_Abstract
             $transactionService = $this->di['mod_service']('Invoice', 'Transaction');
             $transactionService->create([
                 'invoice_id'    =>  $invoice->id,
+                'bb_invoice_id'    =>  $invoice->id,
                 'gateway_id'    =>  $invoice->gateway_id,
+                'bb_gateway_id'    =>  $invoice->gateway_id,
                 'amount'        =>  $invoiceTotal,
-                'ipn'           =>  '{}',
                 'currency'      =>  $invoice->currency,
                 'status'        =>  'received',
                 'note'        =>  $data['transactionId'],

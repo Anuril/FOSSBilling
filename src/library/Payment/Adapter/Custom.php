@@ -88,19 +88,15 @@ class Payment_Adapter_Custom
         $client = $clientService->get(['id' => $invoice->client_id]);
         $invoiceService = $this->di['mod_service']('Invoice');
         $invoiceTotal = $invoiceService->getTotalWithTax($invoice);
-        $chargeInfo = [
-            'amount'        =>  $invoiceTotal,
-            'description'   =>  $gateway['title'] . ' transaction No: ' . $data['transactionId'],
-            'type'          =>  'custom',
-        ];
-
-        $clientService->addFunds($client, $chargeInfo['amount'], $chargeInfo['description'], $chargeInfo);
+        $tx_desc = $gateway->title . ' transaction No: ' . $tx->txn_id;
+        $clientService->addFunds($client, $invoiceTotal, $tx_desc, []);
     
         $invoiceService = $this->di['mod_service']('Invoice');
         $invoiceService->markAsPaid($invoice, true, true);
 
         $tx->status = 'succeeded';
-        $tx->amount = $chargeInfo['amount'];
+        $tx->amount = $invoiceTotal;
+        $tx->note = $gateway->title . ' transaction No: ' . $tx->txn_id;
         $tx->currency = $invoice->currency;
         $tx->updated_at = date('Y-m-d H:i:s');
         $this->di['db']->store($tx);

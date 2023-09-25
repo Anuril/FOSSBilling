@@ -77,60 +77,52 @@ class Payment_Adapter_Custom
         return true;
     }
 
+    /**
+     * Processes a transaction using a custom payment adapter.
+     *
+     * @param mixed $api_admin The API admin object.
+     * @param int $id The ID of the transaction to process.
+     * @param array $data The data associated with the transaction.
+     * @param int $gateway_id The ID of the payment gateway to use.
+     *
+     * @return bool Returns true if the transaction was processed successfully, false otherwise.
+     */
     public function processTransaction($api_admin, $id, $data, $gateway_id)
     {
-        error_log('Start processTransaction for transaction id: ' . $id);
-        $tx      = $this->di['db']->getExistingModelById('Transaction', $id);
-        error_log('loaded transaction: ' . $tx->id);
         try {
-            $invoice = $this->di['db']->getExistingModelById('Invoice', $tx->invoice_id);
-            error_log('loaded invoice: ' . $invoice->id);
-        } catch (\Exception $e) {
-            error_log('Error loading invoice: ' . $e->getMessage());
-            return false;
-        }
-        try {
-            $gateway = $this->di['db']->load('PayGateway', $tx->gateway_id);
-            error_log('loaded models');
-        } catch (\Exception $e) {
-            error_log('Error loading gateway: ' . $e->getMessage());
-            return false;
-        }
-        try {
-            $clientService = $this->di['mod_service']('Client');
-        } catch (\Exception $e) {
-            error_log('Error loading client service: ' . $e->getMessage());
-            return false;
-        }
-        error_log('loaded client service');
-        try {
-            $client = $clientService->get(['id' => $invoice->client_id]);
-        } catch (\Exception $e) {
-            error_log('Error loading client: ' . $e->getMessage());
-            return false;
-        }
-        error_log('loaded client: ' . print_r($client, true));
-        try {
-            $invoiceService = $this->di['mod_service']('Invoice');
-        } catch (\Exception $e) {
-            error_log('Error loading invoice service: ' . $e->getMessage());
-            return false;
-        }
-        $invoiceTotal = $invoiceService->getTotalWithTax($invoice);
-        error_log('loaded invoice. Calculated Total: ' . $invoiceTotal);
-        $tx_desc = $gateway->title . ' transaction No: ' . $tx->txn_id;
-        $clientService->addFunds($client, $invoiceTotal, $tx_desc, []);
-    
-        $invoiceService = $this->di['mod_service']('Invoice');
-        $invoiceService->markAsPaid($invoice, true, true);
 
-        $tx->status = 'succeeded';
-        $tx->amount = $invoiceTotal;
-        $tx->note = $gateway->title . ' transaction No: ' . $tx->txn_id;
-        $tx->currency = $invoice->currency;
-        $tx->updated_at = date('Y-m-d H:i:s');
-        $this->di['db']->store($tx);
-        return true;
+            // Get the transaction and invoice associated with the transaction
+            $tx = $this->di['db']->getExistingModelById('Transaction', $id);
+            $invoice = $this->di['db']->getExistingModelById('Invoice', $tx->invoice_id);
+
+            // Load the payment gateway and client associated with the transaction
+            $gateway = $this->di['db']->load('PayGateway', $tx->gateway_id);
+            $clientService = $this->di['mod_service']('Client');
+            $client = $clientService->get(['id' => $invoice->client_id]);
+
+            // Calculate the total amount of the invoice
+            $invoiceService = $this->di['mod_service']('Invoice');
+            $invoiceTotal = $invoiceService->getTotalWithTax($invoice);
+
+            // Add funds to the client's account and mark the invoice as paid
+            $tx_desc = $gateway->title . ' transaction No: ' . $tx->txn_id;
+            $clientService->addFunds($client, $invoiceTotal, $tx_desc, []);
+            $invoiceService->markAsPaid($invoice, true, true);
+
+            // Update the transaction status and details
+            $tx->status = 'succeeded';
+            $tx->amount = $invoiceTotal;
+            $tx->note = $gateway->title . ' transaction No: ' . $tx->txn_id;
+            $tx->currency = $invoice->currency;
+            $tx->updated_at = date('Y-m-d H:i:s');
+
+            // Store the updated transaction and return true
+            $this->di['db']->store($tx);
+            return true;
+
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
 }

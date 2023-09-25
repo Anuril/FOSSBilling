@@ -81,6 +81,7 @@ class Payment_Adapter_Custom
     {
         error_log('Start processTransaction for transaction id: ' . $id);
         $tx      = $this->di['db']->getExistingModelById('Transaction', $id);
+        error_log('loaded transaction: ' . print_r($tx, true));
         $invoice = $this->di['db']->getExistingModelById('Invoice', $tx->invoice_id);
         $gateway = $this->di['db']->getExistingModelById('Gateway', $tx->$gateway_id);
         error_log('loaded models');

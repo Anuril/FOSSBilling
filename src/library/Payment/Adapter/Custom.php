@@ -81,13 +81,14 @@ class Payment_Adapter_Custom
     {
         error_log('Start processTransaction for transaction id: ' . $id);
         $tx      = $this->di['db']->getExistingModelById('Transaction', $id);
-        error_log('loaded transaction: ' . print_r($tx, true));
+        error_log('loaded transaction: ' . $tx->id);
         $invoice = $this->di['db']->getExistingModelById('Invoice', $tx->invoice_id);
         $gateway = $this->di['db']->getExistingModelById('Gateway', $tx->$gateway_id);
         error_log('loaded models');
         $clientService = $this->di['mod_service']('Client');
-        $client = $clientService->get(['id' => $invoice->client_id]);
         error_log('loaded client service');
+        $client = $clientService->get(['id' => $invoice->client_id]);
+        error_log('loaded client: ' . print_r($client, true));
         $invoiceService = $this->di['mod_service']('Invoice');
         $invoiceTotal = $invoiceService->getTotalWithTax($invoice);
         error_log('loaded invoice. Calculated Total: ' . $invoiceTotal);

@@ -95,25 +95,16 @@ class Payment_Adapter_Custom
         ];
 
         $clientService->addFunds($client, $chargeInfo['amount'], $chargeInfo['description'], $chargeInfo);
-        
-        $charge['status'] = 'succeeded';
-
-
+    
         $invoiceService = $this->di['mod_service']('Invoice');
-        $invoiceService->markAsPaid($invoice, true, $execute);
-        
-        $paymentStatus = match ($charge->status) {
-            'succeeded' => 'processed',
-            'pending' => 'received',
-            'failed' => 'error',
-        };
+        $invoiceService->markAsPaid($invoice, true, true);
 
-        $tx->status = $paymentStatus;
+        $tx->status = 'succeeded';
         $tx->amount = $chargeInfo['amount'];
-        $tx->
+        $tx->currency = $invoice->currency;
         $tx->updated_at = date('Y-m-d H:i:s');
         $this->di['db']->store($tx);
-        return $true;
+        return true;
     }
 
 }

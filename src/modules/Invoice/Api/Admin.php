@@ -67,7 +67,7 @@ class Admin extends \Api_Abstract
         $gateway_id = [ 'id' => $invoice->gateway_id ];
         $payGateway = $this->gateway_get($gateway_id);
         $charge = false;
-        // Check if the payment type is "Custom Payment", Add funds, then set the "Charge" flag to true
+        // Check if the payment type is "Custom Payment", Add transaction and process it.
         if ($payGateway['code'] == 'Custom' && $payGateway['enabled'] == 1) {
 
             // create transaction

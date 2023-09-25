@@ -88,6 +88,7 @@ class Payment_Adapter_Custom
         $client = $clientService->get(['id' => $invoice->client_id]);
         $invoiceService = $this->di['mod_service']('Invoice');
         $invoiceTotal = $invoiceService->getTotalWithTax($invoice);
+        error_log('invoiceTotal: ' . $invoiceTotal);
         $tx_desc = $gateway->title . ' transaction No: ' . $tx->txn_id;
         $clientService->addFunds($client, $invoiceTotal, $tx_desc, []);
     

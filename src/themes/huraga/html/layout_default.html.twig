@@ -292,7 +292,7 @@
 </div>
 
 {% if settings.footer_enabled %}
-<footer id="footer" class="container" style="font-align:center">
+<footer id="footer" class="container text-center" >
     <p>&copy; {{ now|format_date(pattern='yyyy') }} {{ settings.footer_signature | default(company.signature) }}</p>
     {% if company.display_bank_info == 1 %}
     <br >

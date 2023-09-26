@@ -26,10 +26,12 @@
 
 		<h3 class='CompanyInfo'>Company</h3>
 		<div class='CompanyInfo'>
+		<p>
 		{% for key, value in seller %}
 			{% if key == 'Address 1' %}{{ "Address"|trans }}:<br>{% elseif key == 'Address 2' %}{% elseif key == 'Address 3' %}{% else %}{{ key }}:{% endif %}
 				{{ value }}<br>
 		{% endfor %}
+		</p>
 		</div>
 
 		<h3 class='ClientInfo'>Client</h3>

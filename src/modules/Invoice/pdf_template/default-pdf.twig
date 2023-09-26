@@ -43,7 +43,7 @@
 		<div class='Breakdown' style='top: {{top}}px'>
 			<table style='width:100%'>
 				<tr>
-					<th style='text-align: center;' width="25px">#</th>
+					<th style='text-align: center; width:25px;'>#</th>
 					<th style='text-align: left'>Product</th>
 					<th style='text-align: right'>Quantity & Price</th>
 					<th style='text-align: right'>Total</th>
@@ -52,7 +52,7 @@
 				{% for item in invoice.lines %}
 					{% set nr = nr + 1 %}
 					<tr>
-						<td style='text-align: center'width="25px">{{ nr }}</td>
+						<td style='text-align: center; width:25px;'>{{ nr }}</td>
 						<td style='text-align: left'>{{ item.title }}</td>
 						<td style='text-align: right'>{{ item.quantity }}x {{ item.price|money_convert }}</td>
 						<td style='text-align: right'>{{ item.total|money_convert }}</td>

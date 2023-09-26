@@ -88,12 +88,15 @@
 				</tr>
 			</table>
 		</div>
+		<p>{{ footer.signature is defined ? footer.signature : "Thank you for your business!" }}</p>
 		<div class='InvoiceFooter'>
-			<p>Thank you for your business!</p>
-			{% if bank_info.display_bank_info == 1 %}
+		<b>{{ invoice.seller }}</b> {{ footer.address_1 }}, {{ footer.address_2 }}, {{ footer.address_3 }} | <b>{{ 'Email'|trans }}:</b> {{ footer.email }} | <b>{{ 'Phone'|trans }}:</b> {{ footer.phone }}<br>
+			{% if footer.display_bank_info == 1 %}
 				<p><b>Payment details:</b><br >
-				Bank: {{ bank_info.bank_name }} | Clearing code: {{ bank_info.bank_clearing_code }} <br> Account number: {{ bank_info.account_number }}</p>
+				{{"Account Owner"|trans}}: {{ invoice.seller }} | {{"Bank"|trans}}: {{ footer.bank_name }} | {{"Clearing code"|trans}} {{ footer.bank_clearing_code }} <br> {{"Account number"|trans}}: {{ footer.account_number }}</p>
 			{% endif %}
+		<p><b>{{ 'VAT ID'|trans }}:</b> {{ footer.company_vat }} | {{ 'Company Reg. No'|trans }}: {{ footer.company_number }}</p><br >
+		<p>{{ footer.www }}</p>
 		</div>
 	</body>
 </html>

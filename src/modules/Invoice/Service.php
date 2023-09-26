@@ -1217,7 +1217,7 @@ class Service implements InjectionAwareInterface
             'logo_source' => $logoSource,
             'seller' => $this->getSellerData($invoice, $sellerLines),
             'seller_lines' => $sellerLines,
-            'bank_info' => $this->getBankInfo($c),
+            'footer' => $this->getFooterInfo($c),
             'buyer' => $this->getBuyerData($invoice, $buyerLines),
             'buyer_lines' => $buyerLines,
             'invoice' => $invoice,
@@ -1494,8 +1494,6 @@ class Service implements InjectionAwareInterface
             'Address 1' => $invoice['seller']['address_1'],
             'Address 2' => $invoice['seller']['address_2'],
             'Address 3' => $invoice['seller']['address_3'],
-            'Company Vat' => $invoice['seller']['company_vat'],
-            'Company Number' => $invoice['seller']['company_number'],
             'Phone' => $invoice['seller']['phone'],
             'Email' => $invoice['seller']['email'],
         ];
@@ -1531,7 +1529,7 @@ class Service implements InjectionAwareInterface
         return $sourceData;
     }
 
-    private function getBankInfo(array $company)
+    private function getFooterInfo(array $company)
     {
         
         $sourceData = [
@@ -1539,6 +1537,15 @@ class Service implements InjectionAwareInterface
             'account_number' => $company['account_number'],
             'bank_clearing_code' => $company['bank_clearing_code'],
             'display_bank_info' => $company['display_bank_info'],
+            'company_vat' => $company['company_vat'],
+            'company_number' => $company['company_number'],
+            'www' => $company['www'],
+            'email' => $company['email'],
+            'signature' => $company['signature'],
+            'address_1' => $company['address_1'],
+            'address_2' => $company['address_2'],
+            'address_3' => $company['address_3'],
+
         ];
 
         foreach ($sourceData as $label => $data) {

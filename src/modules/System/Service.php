@@ -123,7 +123,9 @@ class Service
             'company_address_1',
             'company_address_2',
             'company_address_3',
-
+            'company_bank_name',
+            'company_bank_clearing_code',
+            'company_display_bank_info',
             'company_account_number',
             'company_number',
             'company_note',

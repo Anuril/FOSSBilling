@@ -141,13 +141,13 @@
                                     <dd>{{seller.bank_name}}</dd>
                                     {% endif %}
 
-                                    {% if seller.clearing_code %}
+                                    {% if seller.bank_clearing_code %}
                                     <dt>{{ 'Clearing Code'|trans }}:</dt>
-                                    <dd>{{seller.clearing_code}}</dd>
+                                    <dd>{{seller.bank_clearing_code}}</dd>
                                     {% endif %}
 
                                     {% if seller.account_number %}
-                                    <dt>{{ 'Account'|trans }}:</dt>
+                                    <dt>{{ 'Bank Account'|trans }}:</dt>
                                     <dd>{{seller.account_number}}</dd>
                                     {% endif %}
 

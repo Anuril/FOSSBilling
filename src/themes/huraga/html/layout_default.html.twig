@@ -294,7 +294,9 @@
 {% if settings.footer_enabled %}
 <footer id="footer" class="container">
     <p>&copy; {{ now|format_date(pattern='yyyy') }} {{ settings.footer_signature | default(company.signature) }}</p>
-    <p>Bank Information: Account Number: {{ company.bank_account_number }}, Bank Name: {{ company.bank_name }}, Bank Address: {{ company.bank_address }}</p>
+    {% if settings.display_bank_info %}
+            <p>Bank Information: Account Number: {{ company.company_account_number }}, Bank Name: {{ company.company_bank_name }}, Bank Clearing No: {{ company.company_bank_clearing_code }}</p>
+    {% endif %}
     <ul>
         {% if settings.footer_link_1_enabled %}
         <li>

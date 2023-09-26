@@ -19,8 +19,8 @@
 		<hr class='Rounded'>
 		<div class='InvoiceInfo'>
 			<p>Invoice number: {{ invoice.serie_nr }}</p>
-			<p>Invoice date: {{ invoice.created_at|format_datetime }}</p>
-			<p>Due date: {{ invoice.due_at|format_datetime }}</p>
+			<p>Invoice date: {{ invoice.created_at|format_date }}</p>
+			<p>Due date: {{ invoice.due_at|format_date }}</p>
 			<p>Invoice status: {{ invoice.status|capitalize }}</p>
 		</div>
 

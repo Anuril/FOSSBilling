@@ -1514,8 +1514,8 @@ class Service implements InjectionAwareInterface
     private function getBuyerData(array $invoice, int &$lines)
     {
         $sourceData = [
-            'Name' => $invoice['buyer']['first_name'] . ' ' . $invoice['buyer']['last_name'],
             'Company' => $invoice['buyer']['company'],
+            'Name' => $invoice['buyer']['first_name'] . ' ' . $invoice['buyer']['last_name'],
             'Address' => $invoice['buyer']['address'],
             'Phone' => $invoice['buyer']['phone'],
         ];

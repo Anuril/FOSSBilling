@@ -1181,7 +1181,8 @@ class Service implements InjectionAwareInterface
     {
         $systemService = $this->di['mod_service']('system');
         $c = $systemService->getCompany();
-        $document_format = $systemService->getParamValue('invoice_document_format');
+        $document_format = $systemService->getParamValue('invoice_document_format', 'Letter');
+        
         $invoice = $this->di['db']->findOne('Invoice', 'hash = :hash', [':hash' => $hash]);
         if (!$invoice instanceof \Model_Invoice) {
             throw new \Box_Exception('Invoice not found');

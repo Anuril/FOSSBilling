@@ -1176,6 +1176,8 @@ class Service implements InjectionAwareInterface
 
     public function generatePDF($hash, $identity)
     {
+        $systemService = $this->di['mod_service']('system');
+        $c = $systemService->getCompany();
         $invoice = $this->di['db']->findOne('Invoice', 'hash = :hash', [':hash' => $hash]);
         if (!$invoice instanceof \Model_Invoice) {
             throw new \Box_Exception('Invoice not found');
@@ -1212,6 +1214,7 @@ class Service implements InjectionAwareInterface
             'logo_source' => $logoSource,
             'seller' => $this->getSellerData($invoice, $sellerLines),
             'seller_lines' => $sellerLines,
+            'bank_info' => $this->getBankInfo($c),
             'buyer' => $this->getBuyerData($invoice, $buyerLines),
             'buyer_lines' => $buyerLines,
             'invoice' => $invoice,
@@ -1522,5 +1525,23 @@ class Service implements InjectionAwareInterface
 
         return $sourceData;
     }
+
+    private function getBankInfo(array $company)
+    {
+        $sourceData = [
+            'bank_name' => $company['company_bank_name'],
+            'account_number' => $company['company_account_number'],
+            'bank_clearing_code' => $company['company_bank_clearing_code'],
+        ];
+
+        foreach ($sourceData as $label => $data) {
+            if (empty(trim($data))) {
+                unset($sourceData[$label]);
+            }
+        }
+
+        return $sourceData;
+    }
+
     // End of PDF related functions
 }

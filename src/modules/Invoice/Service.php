@@ -1533,6 +1533,7 @@ class Service implements InjectionAwareInterface
     {
         
         $sourceData = [
+            'company_name' => $company['name'],
             'bank_name' => $company['bank_name'],
             'account_number' => $company['account_number'],
             'bank_clearing_code' => $company['bank_clearing_code'],

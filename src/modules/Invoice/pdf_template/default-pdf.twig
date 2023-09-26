@@ -27,7 +27,7 @@
 		<h3 class='CompanyInfo'>Company</h3>
 		<div class='CompanyInfo'>
 		{% for key, value in seller %}
-			<p>{{ key }}:
+			<p>{{ key }}:{% if key == 'address' %}<br>{% endif %}
 				{{ value }}</p>
 		{% endfor %}
 		</div>

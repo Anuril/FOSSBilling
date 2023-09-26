@@ -212,7 +212,7 @@ class Service implements InjectionAwareInterface
             'company' => !empty($row['seller_company']) ? $row['seller_company'] : $c['name'],
             'company_vat' => $row['seller_company_vat'],
             'company_number' => $row['seller_company_number'],
-            'address' => !empty($row['seller_address']) ? $row['seller_address'] : trim($c['address_1'] . ' ' . $c['address_2'] . ' ' . $c['address_2']),
+            'address' => !empty($row['seller_address']) ? $row['seller_address'] : trim($c['address_1'] . PHP_EOL . $c['address_2'] . PHP_EOL . $c['address_3']),
             'phone' => !empty($row['seller_phone']) ? $row['seller_phone'] : $c['tel'],
             'email' => !empty($row['seller_email']) ? $row['seller_email'] : $c['email'],
             'account_number' => !empty($c['account_number']) ? $c['account_number'] : null,

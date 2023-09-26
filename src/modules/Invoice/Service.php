@@ -1542,7 +1542,7 @@ class Service implements InjectionAwareInterface
             'company_number' => $company['number'],
             'www' => $company['www'],
             'email' => $company['email'],
-            'phone' => $company['phone'],
+            'phone' => $company['tel'],
             'signature' => $company['signature'],
             'address_1' => $company['address_1'],
             'address_2' => $company['address_2'],

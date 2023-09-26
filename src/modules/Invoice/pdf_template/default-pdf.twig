@@ -76,7 +76,7 @@
 				{% endif %}
 				<tr>
 					<th class='right' colspan='3'>Total:</th>
-					<th>{{ invoice.total }}{{ currency_code }}</th>
+					<th>{{ invoice.total|money_convert }}</th>
 				</tr>
 			</table>
 		</div>

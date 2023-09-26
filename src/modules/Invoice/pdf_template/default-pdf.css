@@ -9,14 +9,13 @@
     border-top: 8px solid #bbb;
     border-radius: 5px;
     position: relative;
-    top: 35px;
+    top: 45px;
 }
 
 div.InvoiceInfo {
     position: absolute;
     right: 30px;
     top: 0px;
-    margin-bottom: 10px;
     line-height: 0.2;
 }
 

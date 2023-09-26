@@ -43,19 +43,19 @@
 		<div class='Breakdown' style='top: {{top}}px'>
 			<table style='width:100%'>
 				<tr>
-					<th style='text-align: left'>#</th>
-					<th style='text-align: left'>Product</th>
-					<th style='text-align: right'>Quantity & Price</th>
-					<th style='text-align: right'>Total</th>
+					<th class='left'>#</th>
+					<th class='left'>Product</th>
+					<th class='right'>Quantity & Price</th>
+					<th class='right'>Total</th>
 				</tr>
 				{% set nr = 0 %}
 				{% for item in invoice.lines %}
 					{% set nr = nr + 1 %}
 					<tr>
-						<td style='text-align: left'>{{ nr }}</td>
-						<td style='text-align: left'>{{ item.title }}</td>
-						<td style='text-align: right'>{{ item.quantity }}x {{ item.price|money_convert }}</td>
-						<td style='text-align: right'>{{ item.total|money_convert }}</td>
+						<td class='left'>{{ nr }}</td>
+						<td class='left'>{{ item.title }}</td>
+						<td class='right'>{{ item.quantity }}x {{ item.price|money_convert }}</td>
+						<td class='right'>{{ item.total|money_convert }}</td>
 					</tr>
 				{% endfor %}
 				<tr>
@@ -75,8 +75,8 @@
 					</tr>
 				{% endif %}
 				<tr>
-					<th class='right' colspan='3'>Total:</th>
-					<th>{{ invoice.total|money_convert }}</th>
+					<th class='right'  colspan='3'>Total:</th>
+					<th class='right'>{{ invoice.total|money_convert }}</th>
 				</tr>
 			</table>
 		</div>

@@ -216,6 +216,8 @@ class Service implements InjectionAwareInterface
             'phone' => !empty($row['seller_phone']) ? $row['seller_phone'] : $c['tel'],
             'email' => !empty($row['seller_email']) ? $row['seller_email'] : $c['email'],
             'account_number' => !empty($c['account_number']) ? $c['account_number'] : null,
+            'bank_name' => !empty($c['bank_name']) ? $c['bank_name'] : null,
+            'bank_clearing_code' => !empty($c['bank_code']) ? $c['bank_code'] : null,
         ];
 
         /**

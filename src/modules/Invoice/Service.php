@@ -1491,7 +1491,9 @@ class Service implements InjectionAwareInterface
     {
         $sourceData = [
             'Name' => $invoice['seller']['company'],
-            'Address' => $invoice['seller']['address_1'] . '<br>'.$invoice['seller']['address_2'] . '<br>'.$invoice['seller']['address_3'],
+            'Address 1' => $invoice['seller']['address_1'],
+            'Address 2' => $invoice['seller']['address_2'],
+            'Address 3' => $invoice['seller']['address_3'],
             'Company Vat' => $invoice['seller']['company_vat'],
             'Company Number' => $invoice['seller']['company_number'],
             'Phone' => $invoice['seller']['phone'],

@@ -83,3 +83,14 @@ tr:nth-of-type(odd) {
 body {
     font-family: DejaVu Sans;
 }
+
+/**
+ * The following CSS is used to style the invoice footer.
+ */
+div.InvoiceFooter {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+}

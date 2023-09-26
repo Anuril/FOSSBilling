@@ -16,6 +16,7 @@ div.InvoiceInfo {
     position: absolute;
     right: 30px;
     top: 0px;
+    padding-bottom: 10px;
     line-height: 0.2;
 }
 

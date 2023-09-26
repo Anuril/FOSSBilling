@@ -82,8 +82,10 @@
 		</div>
 		<div class='InvoiceFooter'>
 			<p>Thank you for your business!</p>
-			<p><b>Payment details:</b><br >
-			Bank: {{ bank_info.bank_name }} | Clearing code: {{ bank_info.bank_clearing_code }} | Account number: {{ bank_info.account_number }}</p>
-	</div>
+			{% if bank_info_display_bank_info == 1 %}
+				<p><b>Payment details:</b><br >
+				Bank: {{ bank_info.bank_name }} | Clearing code: {{ bank_info.bank_clearing_code }} <br> Account number: {{ bank_info.account_number }}</p>
+			{% endif %}
+		</div>
 	</body>
 </html>

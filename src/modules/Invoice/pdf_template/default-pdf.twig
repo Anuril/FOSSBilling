@@ -27,7 +27,7 @@
 		<h3 class='CompanyInfo'>Company</h3>
 		<div class='CompanyInfo'>
 		{% for key, value in seller %}
-			<p>{% if key == 'Address 1' %}{{ key }}:<br>{% elseif key == 'Address 2' %}<br>{% elseif key == 'Address 2' %}<br>{% else %}{{ key }}:{% endif %}
+			<p>{% if key == 'Address 1' %}{{ "Address"|trans }}:<br>{% elseif key == 'Address 2' %}{% elseif key == 'Address 3' %}{% else %}{{ key }}:{% endif %}
 				{{ value }}</p>
 		{% endfor %}
 		</div>

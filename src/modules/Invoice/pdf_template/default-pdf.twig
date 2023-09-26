@@ -87,8 +87,8 @@
 					<th style='text-align: right'>{{ invoice.total|money_convert }}</th>
 				</tr>
 			</table>
+		<p>{{ footer.signature is defined ? footer.signature : "FOSSBilling.org - Client Management, Invoice and Support Software" }}</p>
 		</div>
-		<p>{{ footer.signature is defined ? footer.signature : "Thank you for your business!" }}</p>
 		<div class='InvoiceFooter'>
 		{% if footer.display_bank_info == 1 %}
 			<b>Payment details:</b><br >

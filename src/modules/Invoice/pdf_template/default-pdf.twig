@@ -93,7 +93,7 @@
 		<b>{{ footer.company_name }}</b> {{ footer.address_1 }}, {{ footer.address_2 }}, {{ footer.address_3 }} | <b>{{ 'Email'|trans }}:</b> {{ footer.email }} | <b>{{ 'Phone'|trans }}:</b> {{ footer.phone }}<br>
 			{% if footer.display_bank_info == 1 %}
 				<b>Payment details:</b><br >
-				{{"Account Owner"|trans}}: {{ footer.company_name }} | {{"Bank"|trans}}: {{ footer.bank_name }} | {{"Clearing code"|trans}} {{ footer.bank_clearing_code }} <br> {{"Account number"|trans}}: {{ footer.account_number }}
+				{{"Account Owner"|trans}}: {{ footer.company_name }} | {{"Bank"|trans}}: {{ footer.bank_name }} | {{"Clearing code"|trans}} {{ footer.bank_clearing_code }} <br> {{"Account number"|trans}}: {{ footer.account_number }}<br>
 			{% endif %}
 		<b>{{ 'VAT ID'|trans }}:</b> {{ footer.company_vat }} | {{ 'Company Reg. No'|trans }}: {{ footer.company_number }}<br >
 		{{ footer.www }}

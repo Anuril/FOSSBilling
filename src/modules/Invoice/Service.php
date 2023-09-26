@@ -1529,9 +1529,9 @@ class Service implements InjectionAwareInterface
     private function getBankInfo(array $company)
     {
         $sourceData = [
-            'bank_name' => $company['company_bank_name'],
-            'account_number' => $company['company_account_number'],
-            'bank_clearing_code' => $company['company_bank_clearing_code'],
+            'bank_name' => $company['bank_name'],
+            'account_number' => $company['account_number'],
+            'bank_clearing_code' => $company['bank_clearing_code'],
         ];
 
         foreach ($sourceData as $label => $data) {

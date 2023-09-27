@@ -52,7 +52,7 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         ];
         $invoice = $api->invoice_get($data);
         $systemService = $this->di['mod_service']('system');
-        $hash_access = $systemService->getParamValue('invoice_hash_access', '1');
+        $hash_access = $systemService->getParamValue('invoice_accessible_from_hash', '1');
         error_log('Hash access: ' . $hash_access);
         if ($hash_access == '0') {
             $this->di['is_client_logged'];
@@ -69,7 +69,7 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         ];
         $invoice = $api->invoice_get($data);
         $systemService = $this->di['mod_service']('system');
-        $hash_access = $systemService->getParamValue('invoice_hash_access', '1');
+        $hash_access = $systemService->getParamValue('invoice_accessible_from_hash', '1');
         error_log('Hash access: ' . $hash_access);
         if ($hash_access == '0') {
             $this->di['is_client_logged'];
@@ -113,7 +113,7 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         ];
         $invoice = $api->invoice_pdf($data);
         $systemService = $this->di['mod_service']('system');
-        $hash_access = $systemService->getParamValue('invoice_hash_access', '1');
+        $hash_access = $systemService->getParamValue('invoice_accessible_from_hash', '1');
         error_log('Hash access: ' . $hash_access);
         if ($hash_access == '0') {
             $this->di['is_client_logged'];

@@ -57,7 +57,7 @@ class Client implements \FOSSBilling\InjectionAwareInterface
             $client = $this->di['loggedin_client'];
             if ($invoice['client']['id'] != $client->id) {
                 // redirect to client invoices/invoice'));
-                return $app->redirect($this->di['url']->get('invoice'));
+                return $app->redirect('/invoice');
             }
         } else {
             // check if a client is logged in and if yes, check if the invoice belongs to the client
@@ -65,7 +65,7 @@ class Client implements \FOSSBilling\InjectionAwareInterface
                 $client = $this->di['loggedin_client'];
                 if ($invoice['client']['id'] != $client->id) {
                     // redirect to client invoices/invoice'));
-                    return $app->redirect($this->di['url']->get('invoice'));
+                    return $app->redirect('/invoice');
                 }
             }
         }
@@ -87,7 +87,7 @@ class Client implements \FOSSBilling\InjectionAwareInterface
             $client = $this->di['loggedin_client'];
             if ($invoice['client']['id'] != $client->id) {
                 // redirect to client invoices
-                return $app->redirect($this->di['url']->get('invoice'));
+                return $app->redirect('/invoice');
             }
         } else {
             // check if a client is logged in and if yes, check if the invoice belongs to the client
@@ -95,7 +95,7 @@ class Client implements \FOSSBilling\InjectionAwareInterface
                 $client = $this->di['loggedin_client'];
                 if ($invoice['client']['id'] != $client->id) {
                     // redirect to client invoices/invoice'));
-                    return $app->redirect($this->di['url']->get('invoice'));
+                    return $app->redirect('/invoice');
                 }
             }
         }
@@ -142,7 +142,7 @@ class Client implements \FOSSBilling\InjectionAwareInterface
             $client = $this->di['loggedin_client'];
             if ($invoice['client']['id'] != $client->id) {
                 // redirect to client invoices
-                return $app->redirect($this->di['url']->get('invoice'));
+                return $app->redirect('/invoice');
             }
         } else {
             // check if a client is logged in and if yes, check if the invoice belongs to the client
@@ -150,7 +150,7 @@ class Client implements \FOSSBilling\InjectionAwareInterface
                 $client = $this->di['loggedin_client'];
                 if ($invoice['client']['id'] != $client->id) {
                     // redirect to client invoices/invoice'));
-                    return $app->redirect($this->di['url']->get('invoice'));
+                    return $app->redirect('/invoice');
                 }
             }
         }

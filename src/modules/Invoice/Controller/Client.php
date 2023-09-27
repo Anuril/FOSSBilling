@@ -52,7 +52,7 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         ];
         $invoice = $api->invoice_get($data);
         $systemService = $this->di['mod_service']('system');
-        $hash_access = $systemService->getSetting('invoice_hash_access');
+        $hash_access = $systemService->getParamValue('invoice_hash_access', '1');
 
         if ($hash_access == '0') {
             $this->di['is_client_logged'];
@@ -69,7 +69,7 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         ];
         $invoice = $api->invoice_get($data);
         $systemService = $this->di['mod_service']('system');
-        $hash_access = $systemService->getSetting('invoice_hash_access');
+        $hash_access = $systemService->getParamValue('invoice_hash_access', '1');
 
         if ($hash_access == '0') {
             $this->di['is_client_logged'];

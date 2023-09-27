@@ -50,7 +50,7 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         $data = [
             'hash' => $hash,
         ];
-        $invoice = $api->invoice_pdf($data);
+        $invoice = $api->invoice_get($data);
         $systemService = $this->di['mod_service']('system');
         $hash_access = $systemService->getParamValue('invoice_accessible_from_hash', '1');
 
@@ -80,7 +80,7 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         $data = [
             'hash' => $hash,
         ];
-        $invoice = $api->invoice_pdf($data);
+        $invoice = $api->invoice_get($data);
         $systemService = $this->di['mod_service']('system');
         $hash_access = $systemService->getParamValue('invoice_accessible_from_hash', '1');
 

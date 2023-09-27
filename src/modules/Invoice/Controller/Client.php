@@ -56,10 +56,12 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         $isClientLogged = $this->di['is_client_logged'];
         $client = $isClientLogged ? $this->di['loggedin_client'] : null;
         
-        if ($hashAccess == '0' && (!$isClientLogged || $invoice['client']['id'] != $client->id)) {
-            return $app->redirect('/invoice');
-        } elseif ($isClientLogged && $invoice['client']['id'] != $client->id) {
-            return $app->redirect('/invoice');
+        if (!$this->di['is_admin_logged']) {
+            if ($hashAccess == '0' && (!$isClientLogged || $invoice['client']['id'] != $client->id)) {
+                return $app->redirect('/invoice');
+            } elseif ($isClientLogged && $invoice['client']['id'] != $client->id) {
+                return $app->redirect('/invoice');
+            }
         }
 
         return $app->render('mod_invoice_invoice', ['invoice' => $invoice]);
@@ -77,10 +79,12 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         $isClientLogged = $this->di['is_client_logged'];
         $client = $isClientLogged ? $this->di['loggedin_client'] : null;
         
-        if ($hashAccess == '0' && (!$isClientLogged || $invoice['client']['id'] != $client->id)) {
-            return $app->redirect('/invoice');
-        } elseif ($isClientLogged && $invoice['client']['id'] != $client->id) {
-            return $app->redirect('/invoice');
+        if (!$this->di['is_admin_logged']) {
+            if ($hashAccess == '0' && (!$isClientLogged || $invoice['client']['id'] != $client->id)) {
+                return $app->redirect('/invoice');
+            } elseif ($isClientLogged && $invoice['client']['id'] != $client->id) {
+                return $app->redirect('/invoice');
+            }
         }
         return $app->render('mod_invoice_print', ['invoice' => $invoice]);
     }
@@ -123,12 +127,13 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         $hashAccess = $systemService->getParamValue('invoice_accessible_from_hash', '1');
         $isClientLogged = $this->di['is_client_logged'];
         $client = $isClientLogged ? $this->di['loggedin_client'] : null;
-        
-        if ($hashAccess == '0' && (!$isClientLogged || $invoice['client']['id'] != $client->id)) {
-            return $app->redirect('/invoice');
-        } elseif ($isClientLogged && $invoice['client']['id'] != $client->id) {
-            return $app->redirect('/invoice');
+        if (!$this->di['is_admin_logged']) {
+            if ($hashAccess == '0' && (!$isClientLogged || $invoice['client']['id'] != $client->id)) {
+                return $app->redirect('/invoice');
+            } elseif ($isClientLogged && $invoice['client']['id'] != $client->id) {
+                return $app->redirect('/invoice');
+            }
         }
         return $app->render('mod_invoice_pdf', ['invoice' => $invoice]);
-    }
+     }
 }

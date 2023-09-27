@@ -57,11 +57,11 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         // If hash_access is not 0 or if a client is logged in, get the logged-in client
         if (!$this->di['auth']->isAdminLoggedIn()) {
             if ($hash_access == '0') {
-                $this->redirectIfNotInvoiceBuyer($invoice)
+                $this->redirectIfNotInvoiceBuyer($invoice);
             } else {
                 // check if a client is logged in and if yes, check if the invoice belongs to the client
                 if ($this->di['is_client_logged']) {
-                    $this->redirectIfNotInvoiceBuyer($invoice)
+                    $this->redirectIfNotInvoiceBuyer($invoice);
                 }
             } 
         }
@@ -81,11 +81,11 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         // If hash_access is not 0 or if a client is logged in, get the logged-in client
         if (!$this->di['auth']->isAdminLoggedIn()) {
             if ($hash_access == '0') {
-                $this->redirectIfNotInvoiceBuyer($invoice)
+                $this->redirectIfNotInvoiceBuyer($invoice);
             } else {
                 // check if a client is logged in and if yes, check if the invoice belongs to the client
                 if ($this->di['is_client_logged']) {
-                    $this->redirectIfNotInvoiceBuyer($invoice)
+                    $this->redirectIfNotInvoiceBuyer($invoice);
                 }
             } 
         }
@@ -132,11 +132,11 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         // If hash_access is not 0 or if a client is logged in, get the logged-in client
         if (!$this->di['auth']->isAdminLoggedIn()) {
             if ($hash_access == '0') {
-                $this->redirectIfNotInvoiceBuyer($invoice)
+                $this->redirectIfNotInvoiceBuyer($invoice);
             } else {
                 // check if a client is logged in and if yes, check if the invoice belongs to the client
                 if ($this->di['is_client_logged']) {
-                    $this->redirectIfNotInvoiceBuyer($invoice)
+                    $this->redirectIfNotInvoiceBuyer($invoice);
                 }
             } 
         }

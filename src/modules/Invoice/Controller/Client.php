@@ -56,9 +56,8 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         error_log('Hash access: ' . $hash_access);
         if ($hash_access == '0') {
             $this->di['is_client_logged'];
-        } else {
-            return $app->render('mod_invoice_invoice', ['invoice' => $invoice]);
-        }
+        }   
+        return $app->render('mod_invoice_invoice', ['invoice' => $invoice]);
     }
 
     public function get_invoice_print(\Box_App $app, $hash)
@@ -73,9 +72,8 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         error_log('Hash access: ' . $hash_access);
         if ($hash_access == '0') {
             $this->di['is_client_logged'];
-        } else {
-            return $app->render('mod_invoice_print', ['invoice' => $invoice]);
         }
+        return $app->render('mod_invoice_print', ['invoice' => $invoice]);
     }
 
     public function get_thankyoupage(\Box_App $app, $hash)
@@ -117,8 +115,7 @@ class Client implements \FOSSBilling\InjectionAwareInterface
         error_log('Hash access: ' . $hash_access);
         if ($hash_access == '0') {
             $this->di['is_client_logged'];
-        } else {
+        } 
         return $app->render('mod_invoice_pdf', ['invoice' => $invoice]);
-        }
     }
 }

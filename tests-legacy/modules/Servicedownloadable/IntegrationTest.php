@@ -21,8 +21,11 @@ class IntegrationTest extends \BBTestCase
         $this->tempDir = sys_get_temp_dir() . '/fossbilling_integration_test_' . uniqid();
         mkdir($this->tempDir, 0777, true);
         
-        // Define PATH_UPLOADS for tests
-        if (!defined('PATH_UPLOADS')) {
+        // Define PATH_UPLOADS for tests - redefine if already exists
+        if (defined('PATH_UPLOADS')) {
+            // For tests, we need to work around the constant being already defined
+            // We'll use a different approach and override it in the service
+        } else {
             define('PATH_UPLOADS', $this->tempDir . '/');
         }
         
@@ -81,7 +84,7 @@ class IntegrationTest extends \BBTestCase
 
         // 3. Simulate file upload to product
         $filename = 'uploaded_client_test.txt';
-        $filePath = PATH_UPLOADS . md5($filename);
+        $filePath = \Symfony\Component\Filesystem\Path::normalize(PATH_UPLOADS . md5($filename));
         file_put_contents($filePath, 'Uploaded content for client test');
 
         // Update product config with filename
@@ -132,7 +135,7 @@ class IntegrationTest extends \BBTestCase
 
         // 3. Simulate file upload to product
         $filename = 'uploaded_admin_test.txt';
-        $filePath = PATH_UPLOADS . md5($filename);
+        $filePath = \Symfony\Component\Filesystem\Path::normalize(PATH_UPLOADS . md5($filename));
         file_put_contents($filePath, 'Uploaded content for admin test');
 
         // Update product config with filename
@@ -167,7 +170,7 @@ class IntegrationTest extends \BBTestCase
         $product->config = json_encode(['filename' => 'old_file.txt']);
 
         // Create the old file
-        $oldFilePath = PATH_UPLOADS . md5('old_file.txt');
+        $oldFilePath = \Symfony\Component\Filesystem\Path::normalize(PATH_UPLOADS . md5('old_file.txt'));
         file_put_contents($oldFilePath, 'Old file content');
 
         // 2. Setup service
@@ -180,14 +183,17 @@ class IntegrationTest extends \BBTestCase
 
         // 4. Simulate uploading new file (this would normally happen in uploadProductFile)
         $newFilename = 'new_file.txt';
-        $newFilePath = PATH_UPLOADS . md5($newFilename);
+        $newFilePath = \Symfony\Component\Filesystem\Path::normalize(PATH_UPLOADS . md5($newFilename));
         file_put_contents($newFilePath, 'New file content');
 
         // Update product config
         $newConfig = ['filename' => $newFilename];
         $product->config = json_encode($newConfig);
 
-        // 5. Test that new file can be downloaded
+        // 5. Test that new file exists before trying to download
+        $this->assertTrue(file_exists($newFilePath), "New file should exist at: " . $newFilePath);
+
+        // 6. Test that new file can be downloaded
         $result = $service->sendProductFile($product);
         $this->assertTrue($result);
     }
@@ -352,7 +358,7 @@ class IntegrationTest extends \BBTestCase
 
         foreach ($fileTypes as $type => $fileInfo) {
             // Create test file
-            $filePath = PATH_UPLOADS . md5($fileInfo['filename']);
+            $filePath = \Symfony\Component\Filesystem\Path::normalize(PATH_UPLOADS . md5($fileInfo['filename']));
             file_put_contents($filePath, $fileInfo['content']);
 
             // Create product
@@ -384,13 +390,27 @@ class IntegrationTest extends \BBTestCase
             return $model;
         });
         $dbMock->method('store')->willReturn(1);
+        $dbMock->method('trash')->willReturn(true);
 
         // Mock logger
         $loggerMock = $this->getMockBuilder('\Box_Log')->getMock();
 
+        // Mock mod_service for toApiArray method
+        $productServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Product\Service::class)->getMock();
+        $orderServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Order\Service::class)->getMock();
+        $modServiceMock = function($service) use ($productServiceMock, $orderServiceMock) {
+            if ($service === 'product') {
+                return $productServiceMock;
+            } elseif ($service === 'order') {
+                return $orderServiceMock;
+            }
+            return null;
+        };
+
         $di['validator'] = $validatorMock;
         $di['db'] = $dbMock;
         $di['logger'] = $loggerMock;
+        $di['mod_service'] = $di->protect($modServiceMock);
 
         return $di;
     }

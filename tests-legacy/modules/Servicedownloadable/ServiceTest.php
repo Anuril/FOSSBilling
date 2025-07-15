@@ -57,9 +57,19 @@ class ServiceTest extends \BBTestCase
         
         $loggerMock = $this->getMockBuilder('\Box_Log')->getMock();
 
+        // Mock mod_service for toApiArray method
+        $productServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Product\Service::class)->getMock();
+        $modServiceMock = function($service) use ($productServiceMock) {
+            if ($service === 'product') {
+                return $productServiceMock;
+            }
+            return null;
+        };
+
         $this->di['validator'] = $validatorMock;
         $this->di['db'] = $dbMock;
         $this->di['logger'] = $loggerMock;
+        $this->di['mod_service'] = $this->di->protect($modServiceMock);
         
         $this->service->setDi($this->di);
     }
@@ -328,7 +338,7 @@ class ServiceTest extends \BBTestCase
         // Create a test file
         $filename = 'test_download.txt';
         $content = 'Test file content';
-        $filePath = PATH_UPLOADS . md5($filename);
+        $filePath = Path::normalize(PATH_UPLOADS . md5($filename));
         file_put_contents($filePath, $content);
 
         $serviceModel = new \Model_ServiceDownloadable();
@@ -365,7 +375,7 @@ class ServiceTest extends \BBTestCase
         // Create a test file
         $filename = 'test_product_file.txt';
         $content = 'Test product file content';
-        $filePath = PATH_UPLOADS . md5($filename);
+        $filePath = Path::normalize(PATH_UPLOADS . md5($filename));
         file_put_contents($filePath, $content);
 
         $productModel = new \Model_Product();

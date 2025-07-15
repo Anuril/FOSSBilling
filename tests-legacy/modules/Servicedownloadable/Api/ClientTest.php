@@ -339,7 +339,7 @@ class ClientTest extends \BBTestCase
         // Create a test file
         $filename = 'client_test_file.txt';
         $content = 'Test file content for client download';
-        $filePath = PATH_UPLOADS . md5($filename);
+        $filePath = \Symfony\Component\Filesystem\Path::normalize(PATH_UPLOADS . md5($filename));
         file_put_contents($filePath, $content);
 
         $data = ['order_id' => 1];
@@ -425,8 +425,19 @@ class ClientTest extends \BBTestCase
     {
         $data = ['order_id' => ''];
 
+        $client = new \Model_Client();
+        $client->loadBean(new \DummyBean());
+        $client->id = 123;
+
+        $this->api->setIdentity($client);
+
+        $this->di['db']->expects($this->once())
+            ->method('findOne')
+            ->with('ClientOrder', 'id = :id AND client_id = :client_id', [':id' => '', ':client_id' => 123])
+            ->willReturn(null);
+
         $this->expectException(\FOSSBilling\Exception::class);
-        $this->expectExceptionMessage('Order ID is required');
+        $this->expectExceptionMessage('Order not found');
         
         $this->api->send_file($data);
     }

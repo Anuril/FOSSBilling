@@ -408,7 +408,6 @@ class UpdatePatcher implements InjectionAwareInterface
             44 => function (): void {
                 // Patch to fix servicedownloadable products where filename was lost from config
                 // due to bug in saveProductConfig that reset config to empty array
-                // @see https://github.com/FOSSBilling/FOSSBilling/issues/xxxx
 
                 $filesystem = new Filesystem();
 

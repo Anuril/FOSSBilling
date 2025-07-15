@@ -89,7 +89,7 @@ class AdminTest extends \BBTestCase
         $this->assertTrue($result);
     }
 
-    public function testconfig_save(): void
+    public function testconfigSave(): void
     {
         $data = [
             'id' => 1,
@@ -124,13 +124,13 @@ class AdminTest extends \BBTestCase
 
         $this->api->setDi($di);
         $this->api->setService($serviceMock);
-        
+
         $result = $this->api->config_save($data);
         $this->assertIsBool($result);
         $this->assertTrue($result);
     }
 
-    public function testconfig_save_MissingId(): void
+    public function testconfigSaveMissingId(): void
     {
         $data = [
             'update_orders' => true,
@@ -146,13 +146,13 @@ class AdminTest extends \BBTestCase
         $di['validator'] = $validatorMock;
 
         $this->api->setDi($di);
-        
+
         $this->expectException(\FOSSBilling\Exception::class);
         $this->expectExceptionMessage('Product ID is missing');
         $this->api->config_save($data);
     }
 
-    public function testconfig_save_ProductNotFound(): void
+    public function testconfigSaveProductNotFound(): void
     {
         $data = [
             'id' => 999,
@@ -176,7 +176,7 @@ class AdminTest extends \BBTestCase
         $di['validator'] = $validatorMock;
 
         $this->api->setDi($di);
-        
+
         $this->expectException(\FOSSBilling\Exception::class);
         $this->expectExceptionMessage('Product not found');
         $this->api->config_save($data);

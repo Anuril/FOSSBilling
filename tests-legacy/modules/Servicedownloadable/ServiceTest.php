@@ -118,10 +118,10 @@ class ServiceTest extends \BBTestCase
 
         $this->service->setDi($di);
         $result = $this->service->saveProductConfig($productModel, $data);
-        
+
         $this->assertIsBool($result);
         $this->assertTrue($result);
-        
+
         // Verify the config was updated correctly
         $updatedConfig = json_decode($productModel->config, true);
         $this->assertIsArray($updatedConfig);
@@ -151,10 +151,10 @@ class ServiceTest extends \BBTestCase
 
         $this->service->setDi($di);
         $result = $this->service->saveProductConfig($productModel, $data);
-        
+
         $this->assertIsBool($result);
         $this->assertTrue($result);
-        
+
         // Verify the config was updated correctly
         $updatedConfig = json_decode($productModel->config, true);
         $this->assertIsArray($updatedConfig);
@@ -184,10 +184,10 @@ class ServiceTest extends \BBTestCase
 
         $this->service->setDi($di);
         $result = $this->service->saveProductConfig($productModel, $data);
-        
+
         $this->assertIsBool($result);
         $this->assertTrue($result);
-        
+
         // Verify the config was created correctly
         $updatedConfig = json_decode($productModel->config, true);
         $this->assertIsArray($updatedConfig);

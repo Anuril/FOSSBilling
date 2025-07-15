@@ -198,9 +198,8 @@ class Service implements InjectionAwareInterface
             foreach ($orders as $order) {
                 $ordermodel = $this->di['db']->getExistingModelById('ClientOrder', $order['id']);
                 $serviceDownloadable = $orderService->getOrderService($ordermodel);
-                $this->updateProductFile($serviceDownloadable, $ordermodel);
 
-                // Update the filename
+                // Update the filename in the order config
                 $oldconfig = json_decode($order['config'], 1);
                 $oldconfig['filename'] = $fileName;
 
@@ -208,6 +207,11 @@ class Service implements InjectionAwareInterface
                 $ordermodel->config = json_encode($oldconfig);
                 $ordermodel->updated_at = date('Y-m-d H:i:s');
                 $this->di['db']->store($ordermodel);
+                // Update the filename in the servicedownloadable record
+                $serviceDownloadable->filename = $fileName;
+                $serviceDownloadable->updated_at = date('Y-m-d H:i:s');
+                $this->di['db']->store($serviceDownloadable);
+                
             }
         }
 

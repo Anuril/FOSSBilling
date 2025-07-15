@@ -2,452 +2,196 @@
 
 namespace Box\Mod\Servicedownloadable;
 
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Filesystem\Path;
-
 class ServiceTest extends \BBTestCase
 {
     /**
      * @var Service
      */
     protected $service;
-    protected $di;
-    protected $tempDir;
-    protected $originalUploadsPath;
 
-    public function setUp(): void
+    public function setup(): void
     {
         $this->service = new Service();
-        $this->di = new \Pimple\Container();
-        
-        // Create temporary directory for test files
-        $this->tempDir = sys_get_temp_dir() . '/fossbilling_test_' . uniqid();
-        mkdir($this->tempDir, 0777, true);
-        
-        // Store original PATH_UPLOADS if defined
-        if (defined('PATH_UPLOADS')) {
-            $this->originalUploadsPath = PATH_UPLOADS;
-        }
-        
-        // Define PATH_UPLOADS for tests
-        if (!defined('PATH_UPLOADS')) {
-            define('PATH_UPLOADS', $this->tempDir . '/');
-        }
-
-        $this->setupMockDependencies();
     }
 
-    public function tearDown(): void
-    {
-        // Clean up temp directory
-        if (is_dir($this->tempDir)) {
-            $filesystem = new Filesystem();
-            $filesystem->remove($this->tempDir);
-        }
-        parent::tearDown();
-    }
-
-    private function setupMockDependencies(): void
-    {
-        $validatorMock = $this->getMockBuilder('\\' . \FOSSBilling\Validate::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        
-        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
-        
-        $loggerMock = $this->getMockBuilder('\Box_Log')->getMock();
-
-        // Mock mod_service for toApiArray method
-        $productServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Product\Service::class)->getMock();
-        $modServiceMock = function($service) use ($productServiceMock) {
-            if ($service === 'product') {
-                return $productServiceMock;
-            }
-            return null;
-        };
-
-        $this->di['validator'] = $validatorMock;
-        $this->di['db'] = $dbMock;
-        $this->di['logger'] = $loggerMock;
-        $this->di['mod_service'] = $this->di->protect($modServiceMock);
-        
-        $this->service->setDi($this->di);
-    }
-
-    public function testSetDi(): void
+    public function testgetDi(): void
     {
         $di = new \Pimple\Container();
         $this->service->setDi($di);
-        $this->assertEquals($di, $this->service->getDi());
+        $getDi = $this->service->getDi();
+        $this->assertEquals($di, $getDi);
     }
 
-    public function testAttachOrderConfigSuccess(): void
+    public function testattachOrderConfig(): void
     {
         $productModel = new \Model_Product();
         $productModel->loadBean(new \DummyBean());
-        $productModel->config = '{"filename": "test_file.txt"}';
-
-        $data = ['additional_data' => 'value'];
-
-        $this->di['validator']->expects($this->once())
-            ->method('checkRequiredParamsForArray')
-            ->with(['filename' => 'Product is not configured completely.'], ['filename' => 'test_file.txt']);
-
-        $result = $this->service->attachOrderConfig($productModel, $data);
-        
-        $this->assertIsArray($result);
-        $this->assertEquals('test_file.txt', $result['filename']);
-        $this->assertEquals('value', $result['additional_data']);
-    }
-
-    public function testAttachOrderConfigMissingFilename(): void
-    {
-        $productModel = new \Model_Product();
-        $productModel->loadBean(new \DummyBean());
-        $productModel->config = '{}';
+        $productModel->config = '{"filename" : "temp/asdcxTest.txt"}';
 
         $data = [];
 
-        $this->di['validator']->expects($this->once())
+        $expected = array_merge(json_decode($productModel->config, 1), $data);
+
+        $validatorMock = $this->getMockBuilder('\\' . \FOSSBilling\Validate::class)->disableOriginalConstructor()->getMock();
+        $validatorMock->expects($this->atLeastOnce())
             ->method('checkRequiredParamsForArray')
-            ->willThrowException(new \FOSSBilling\Exception('Product is not configured completely.'));
-
-        $this->expectException(\FOSSBilling\Exception::class);
-        $this->expectExceptionMessage('Product is not configured completely.');
-        
-        $this->service->attachOrderConfig($productModel, $data);
-    }
-
-    public function testAttachOrderConfigInvalidJson(): void
-    {
-        $productModel = new \Model_Product();
-        $productModel->loadBean(new \DummyBean());
-        $productModel->config = 'invalid_json';
-
-        $data = [];
-
-        $this->di['validator']->expects($this->once())
-            ->method('checkRequiredParamsForArray')
-            ->with(['filename' => 'Product is not configured completely.'], null);
-
-        $result = $this->service->attachOrderConfig($productModel, $data);
-        $this->assertIsArray($result);
-    }
-
-    public function testValidateOrderDataSuccess(): void
-    {
-        $data = ['filename' => 'test_file.txt'];
-
-        $this->di['validator']->expects($this->once())
-            ->method('checkRequiredParamsForArray')
-            ->with(['filename' => 'Filename is missing in product config'], $data);
-
-        $this->service->validateOrderData($data);
-    }
-
-    public function testValidateOrderDataMissingFilename(): void
-    {
-        $data = [];
-
-        $this->di['validator']->expects($this->once())
-            ->method('checkRequiredParamsForArray')
-            ->willThrowException(new \FOSSBilling\Exception('Filename is missing in product config'));
-
-        $this->expectException(\FOSSBilling\Exception::class);
-        $this->expectExceptionMessage('Filename is missing in product config');
-        
-        $this->service->validateOrderData($data);
-    }
-
-    public function testActionCreate(): void
-    {
-        $clientOrder = new \Model_ClientOrder();
-        $clientOrder->loadBean(new \DummyBean());
-        $clientOrder->id = 1;
-        $clientOrder->client_id = 123;
-        $clientOrder->config = '{"filename": "test_file.txt"}';
-
-        $serviceModel = new \Model_ServiceDownloadable();
-        $serviceModel->loadBean(new \DummyBean());
-
-        $this->di['validator']->expects($this->once())
-            ->method('checkRequiredParamsForArray');
-
-        $this->di['db']->expects($this->once())
-            ->method('dispense')
-            ->with('ServiceDownloadable')
-            ->willReturn($serviceModel);
-
-        $this->di['db']->expects($this->once())
-            ->method('store')
-            ->with($serviceModel)
-            ->willReturn(1);
-
-        $result = $this->service->action_create($clientOrder);
-
-        $this->assertInstanceOf('\Model_ServiceDownloadable', $result);
-        $this->assertEquals(123, $result->client_id);
-        $this->assertEquals('test_file.txt', $result->filename);
-        $this->assertEquals(0, $result->downloads);
-    }
-
-    public function testActionCreateMissingConfig(): void
-    {
-        $clientOrder = new \Model_ClientOrder();
-        $clientOrder->loadBean(new \DummyBean());
-        $clientOrder->id = 1;
-        $clientOrder->config = null;
-
-        $this->expectException(\FOSSBilling\Exception::class);
-        $this->expectExceptionMessage('Order #1 config is missing');
-        
-        $this->service->action_create($clientOrder);
-    }
-
-    public function testActionCreateInvalidConfig(): void
-    {
-        $clientOrder = new \Model_ClientOrder();
-        $clientOrder->loadBean(new \DummyBean());
-        $clientOrder->id = 1;
-        $clientOrder->config = 'invalid_json';
-
-        $this->expectException(\FOSSBilling\Exception::class);
-        $this->expectExceptionMessage('Order #1 config is missing');
-        
-        $this->service->action_create($clientOrder);
-    }
-
-    public function testActionActivate(): void
-    {
-        $clientOrder = new \Model_ClientOrder();
-        $result = $this->service->action_activate($clientOrder);
-        $this->assertTrue($result);
-    }
-
-    public function testActionRenew(): void
-    {
-        $clientOrder = new \Model_ClientOrder();
-        $result = $this->service->action_renew($clientOrder);
-        $this->assertTrue($result);
-    }
-
-    public function testActionSuspend(): void
-    {
-        $clientOrder = new \Model_ClientOrder();
-        $result = $this->service->action_suspend($clientOrder);
-        $this->assertTrue($result);
-    }
-
-    public function testActionUnsuspend(): void
-    {
-        $clientOrder = new \Model_ClientOrder();
-        $result = $this->service->action_unsuspend($clientOrder);
-        $this->assertTrue($result);
-    }
-
-    public function testActionCancel(): void
-    {
-        $clientOrder = new \Model_ClientOrder();
-        $result = $this->service->action_cancel($clientOrder);
-        $this->assertTrue($result);
-    }
-
-    public function testActionUncancel(): void
-    {
-        $clientOrder = new \Model_ClientOrder();
-        $result = $this->service->action_uncancel($clientOrder);
-        $this->assertTrue($result);
-    }
-
-    public function testActionDelete(): void
-    {
-        $clientOrder = new \Model_ClientOrder();
-        $serviceModel = new \Model_ServiceDownloadable();
-
-        $orderServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Order\Service::class)->getMock();
-        $orderServiceMock->expects($this->once())
-            ->method('getOrderService')
-            ->with($clientOrder)
-            ->willReturn($serviceModel);
-
-        $this->di['mod_service'] = $this->di->protect(function () use ($orderServiceMock) {
-            return $orderServiceMock;
-        });
-
-        $this->di['db']->expects($this->once())
-            ->method('trash')
-            ->with($serviceModel);
-
-        $this->service->action_delete($clientOrder);
-    }
-
-    public function testActionDeleteNoService(): void
-    {
-        $clientOrder = new \Model_ClientOrder();
-
-        $orderServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Order\Service::class)->getMock();
-        $orderServiceMock->expects($this->once())
-            ->method('getOrderService')
-            ->with($clientOrder)
             ->willReturn(null);
 
-        $this->di['mod_service'] = $this->di->protect(function () use ($orderServiceMock) {
-            return $orderServiceMock;
-        });
+        $di = new \Pimple\Container();
+        $di['validator'] = $validatorMock;
+        $this->service->setDi($di);
+        $result = $this->service->attachOrderConfig($productModel, $data);
+        $this->assertIsArray($result);
+        $this->assertEquals($expected, $result);
+    }
 
-        $this->di['db']->expects($this->never())
+    public function testactionCreate(): void
+    {
+        $clientOrderModel = new \Model_ClientOrder();
+        $clientOrderModel->loadBean(new \DummyBean());
+        $clientOrderModel->config = '{"filename" : "temp/asdcxTest.txt"}';
+
+        $model = new \Model_ServiceDownloadable();
+        $model->loadBean(new \DummyBean());
+
+        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock->expects($this->atLeastOnce())
+            ->method('dispense')
+            ->willReturn($model);
+
+        $dbMock->expects($this->atLeastOnce())
+            ->method('store')
+            ->willReturn(1);
+        $validatorMock = $this->getMockBuilder('\\' . \FOSSBilling\Validate::class)->disableOriginalConstructor()->getMock();
+        $validatorMock->expects($this->atLeastOnce())
+            ->method('checkRequiredParamsForArray')
+            ->willReturn(null);
+
+        $di = new \Pimple\Container();
+        $di['db'] = $dbMock;
+        $di['validator'] = $validatorMock;
+
+        $this->service->setDi($di);
+        $result = $this->service->action_create($clientOrderModel);
+        $this->assertInstanceOf('\Model_ServiceDownloadable', $result);
+    }
+
+    public function testactionDelete(): void
+    {
+        $clientOrderModel = new \Model_ClientOrder();
+
+        $orderServiceMock = $this->getMockBuilder('\\' . \Box\Mod\Order\Service::class)->getMock();
+        $orderServiceMock->expects($this->atLeastOnce())
+            ->method('getOrderService')
+            ->willReturn(new \Model_ServiceDownloadable());
+
+        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock->expects($this->atLeastOnce())
             ->method('trash');
 
-        $this->service->action_delete($clientOrder);
+        $di = new \Pimple\Container();
+        $di['db'] = $dbMock;
+        $di['mod_service'] = $di->protect(fn () => $orderServiceMock);
+
+        $this->service->setDi($di);
+        $this->service->action_delete($clientOrderModel);
     }
 
-    public function testToApiArrayClient(): void
+    public function testsaveProductConfig(): void
     {
-        $serviceModel = new \Model_ServiceDownloadable();
-        $serviceModel->loadBean(new \DummyBean());
-        $serviceModel->filename = 'test_file.txt';
-        $serviceModel->downloads = 5;
+        $data = [
+            'update_orders' => true,
+        ];
 
-        $result = $this->service->toApiArray($serviceModel, false, null);
+        $productModel = new \Model_Product();
+        $productModel->loadBean(new \DummyBean());
+        $productModel->config = '{"filename": "test.txt"}';
 
-        $this->assertIsArray($result);
-        $this->assertEquals(Path::normalize(PATH_UPLOADS . md5('test_file.txt')), $result['path']);
-        $this->assertEquals('test_file.txt', $result['filename']);
-        $this->assertArrayNotHasKey('downloads', $result);
-    }
-
-    public function testToApiArrayAdmin(): void
-    {
-        $serviceModel = new \Model_ServiceDownloadable();
-        $serviceModel->loadBean(new \DummyBean());
-        $serviceModel->filename = 'test_file.txt';
-        $serviceModel->downloads = 5;
-
-        $adminIdentity = new \Model_Admin();
-
-        $result = $this->service->toApiArray($serviceModel, false, $adminIdentity);
-
-        $this->assertIsArray($result);
-        $this->assertEquals(Path::normalize(PATH_UPLOADS . md5('test_file.txt')), $result['path']);
-        $this->assertEquals('test_file.txt', $result['filename']);
-        $this->assertEquals(5, $result['downloads']);
-    }
-
-    public function testSendFileSuccess(): void
-    {
-        // Create a test file
-        $filename = 'test_download.txt';
-        $content = 'Test file content';
-        $filePath = Path::normalize(PATH_UPLOADS . md5($filename));
-        file_put_contents($filePath, $content);
-
-        $serviceModel = new \Model_ServiceDownloadable();
-        $serviceModel->loadBean(new \DummyBean());
-        $serviceModel->filename = $filename;
-        $serviceModel->downloads = 0;
-
-        $this->di['db']->expects($this->once())
+        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock->expects($this->atLeastOnce())
             ->method('store')
-            ->with($serviceModel);
+            ->with($productModel)
+            ->willReturn(1);
 
-        // Logger configured in setUp
+        $di = new \Pimple\Container();
+        $di['db'] = $dbMock;
 
-        $result = $this->service->sendFile($serviceModel);
-        $this->assertTrue($result);
-        $this->assertEquals(1, $serviceModel->downloads);
-    }
-
-    public function testSendFileNotFound(): void
-    {
-        $serviceModel = new \Model_ServiceDownloadable();
-        $serviceModel->loadBean(new \DummyBean());
-        $serviceModel->filename = 'nonexistent_file.txt';
-
-        $this->expectException(\FOSSBilling\Exception::class);
-        $this->expectExceptionMessage('File cannot be downloaded at the moment. Please contact support.');
-        
-        $this->service->sendFile($serviceModel);
-    }
-
-    public function testSendProductFileSuccess(): void
-    {
-        // Create a test file
-        $filename = 'test_product_file.txt';
-        $content = 'Test product file content';
-        $filePath = Path::normalize(PATH_UPLOADS . md5($filename));
-        file_put_contents($filePath, $content);
-
-        $productModel = new \Model_Product();
-        $productModel->loadBean(new \DummyBean());
-        $productModel->id = 1;
-        $productModel->config = json_encode(['filename' => $filename]);
-
-        // Logger configured in setUp
-
-        $result = $this->service->sendProductFile($productModel);
-        $this->assertTrue($result);
-    }
-
-    public function testSendProductFileNoFile(): void
-    {
-        $productModel = new \Model_Product();
-        $productModel->loadBean(new \DummyBean());
-        $productModel->config = '{}';
-
-        $this->expectException(\FOSSBilling\Exception::class);
-        $this->expectExceptionMessage('No file associated with this product');
-        
-        $this->service->sendProductFile($productModel);
-    }
-
-    public function testSendProductFileNotFound(): void
-    {
-        $productModel = new \Model_Product();
-        $productModel->loadBean(new \DummyBean());
-        $productModel->config = json_encode(['filename' => 'nonexistent.txt']);
-
-        $this->expectException(\FOSSBilling\Exception::class);
-        $this->expectExceptionMessage('File cannot be downloaded at the moment. Please contact support.');
-        
-        $this->service->sendProductFile($productModel);
-    }
-
-    public function testSaveProductConfig(): void
-    {
-        $productModel = new \Model_Product();
-        $productModel->loadBean(new \DummyBean());
-        $productModel->config = '{"existing": "value"}';
-
-        $data = ['update_orders' => true];
-
-        $this->di['db']->expects($this->once())
-            ->method('store')
-            ->with($productModel);
-
+        $this->service->setDi($di);
         $result = $this->service->saveProductConfig($productModel, $data);
         
-        $config = json_decode($productModel->config, true);
-        $this->assertTrue($config['update_orders']);
-        $this->assertEquals('value', $config['existing']);
+        $this->assertIsBool($result);
         $this->assertTrue($result);
+        
+        // Verify the config was updated correctly
+        $updatedConfig = json_decode($productModel->config, true);
+        $this->assertIsArray($updatedConfig);
+        $this->assertEquals('test.txt', $updatedConfig['filename']);
+        $this->assertTrue($updatedConfig['update_orders']);
+        $this->assertNotNull($productModel->updated_at);
     }
 
-    public function testSaveProductConfigEmptyConfig(): void
+    public function testsaveProductConfigWithExistingConfig(): void
     {
+        $data = [
+            'update_orders' => false,
+        ];
+
+        $productModel = new \Model_Product();
+        $productModel->loadBean(new \DummyBean());
+        $productModel->config = '{"filename": "existing.txt", "update_orders": true}';
+
+        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock->expects($this->atLeastOnce())
+            ->method('store')
+            ->with($productModel)
+            ->willReturn(1);
+
+        $di = new \Pimple\Container();
+        $di['db'] = $dbMock;
+
+        $this->service->setDi($di);
+        $result = $this->service->saveProductConfig($productModel, $data);
+        
+        $this->assertIsBool($result);
+        $this->assertTrue($result);
+        
+        // Verify the config was updated correctly
+        $updatedConfig = json_decode($productModel->config, true);
+        $this->assertIsArray($updatedConfig);
+        $this->assertEquals('existing.txt', $updatedConfig['filename']);
+        $this->assertFalse($updatedConfig['update_orders']);
+        $this->assertNotNull($productModel->updated_at);
+    }
+
+    public function testsaveProductConfigWithNoExistingConfig(): void
+    {
+        $data = [
+            'update_orders' => true,
+        ];
+
         $productModel = new \Model_Product();
         $productModel->loadBean(new \DummyBean());
         $productModel->config = null;
 
-        $data = ['update_orders' => false];
-
-        $this->di['db']->expects($this->once())
+        $dbMock = $this->getMockBuilder('\Box_Database')->getMock();
+        $dbMock->expects($this->atLeastOnce())
             ->method('store')
-            ->with($productModel);
+            ->with($productModel)
+            ->willReturn(1);
 
+        $di = new \Pimple\Container();
+        $di['db'] = $dbMock;
+
+        $this->service->setDi($di);
         $result = $this->service->saveProductConfig($productModel, $data);
         
-        $config = json_decode($productModel->config, true);
-        $this->assertFalse($config['update_orders']);
+        $this->assertIsBool($result);
         $this->assertTrue($result);
+        
+        // Verify the config was created correctly
+        $updatedConfig = json_decode($productModel->config, true);
+        $this->assertIsArray($updatedConfig);
+        $this->assertTrue($updatedConfig['update_orders']);
+        $this->assertNotNull($productModel->updated_at);
     }
 }

@@ -58,7 +58,7 @@ class AdminTest extends \BBTestCase
         // Mock API admin
         $apiAdminMock = $this->getMockBuilder('\Api_Admin')->getMock();
         $apiAdminMock->expects($this->once())
-            ->method('servicedownloadable_send_file')
+            ->method('send_file')
             ->with(['id' => $productId]);
 
         $this->di['api_admin'] = $apiAdminMock;
@@ -73,7 +73,7 @@ class AdminTest extends \BBTestCase
         // Mock API admin that will throw exception
         $apiAdminMock = $this->getMockBuilder('\Api_Admin')->getMock();
         $apiAdminMock->expects($this->once())
-            ->method('servicedownloadable_send_file')
+            ->method('send_file')
             ->with(['id' => $productId])
             ->willThrowException(new \FOSSBilling\Exception('Product ID is missing'));
 
@@ -92,7 +92,7 @@ class AdminTest extends \BBTestCase
         // Mock API admin that will throw exception
         $apiAdminMock = $this->getMockBuilder('\Api_Admin')->getMock();
         $apiAdminMock->expects($this->once())
-            ->method('servicedownloadable_send_file')
+            ->method('send_file')
             ->with(['id' => $productId])
             ->willThrowException(new \FOSSBilling\Exception('Product not found'));
 
@@ -111,14 +111,14 @@ class AdminTest extends \BBTestCase
         // Mock API admin that will throw exception for no file
         $apiAdminMock = $this->getMockBuilder('\Api_Admin')->getMock();
         $apiAdminMock->expects($this->once())
-            ->method('servicedownloadable_send_file')
+            ->method('send_file')
             ->with(['id' => $productId])
-            ->willThrowException(new \FOSSBilling\Exception('No file associated with this product'));
+            ->willThrowException(new \FOSSBilling\Exception('No file is configured for this product'));
 
         $this->di['api_admin'] = $apiAdminMock;
 
         $this->expectException(\FOSSBilling\Exception::class);
-        $this->expectExceptionMessage('No file associated with this product');
+        $this->expectExceptionMessage('No file is configured for this product');
 
         $this->controller->get_download($this->app, $productId);
     }
@@ -130,9 +130,9 @@ class AdminTest extends \BBTestCase
         // Mock API admin that will throw exception for file not found
         $apiAdminMock = $this->getMockBuilder('\Api_Admin')->getMock();
         $apiAdminMock->expects($this->once())
-            ->method('servicedownloadable_send_file')
+            ->method('send_file')
             ->with(['id' => $productId])
-            ->willThrowException(new \FOSSBilling\Exception('File cannot be downloaded at the moment. Please contact support.', null, 404));
+            ->willThrowException(new \FOSSBilling\Exception('File cannot be downloaded at the moment. Please contact support.'));
 
         $this->di['api_admin'] = $apiAdminMock;
 
@@ -149,14 +149,14 @@ class AdminTest extends \BBTestCase
         // Mock API admin that will throw exception
         $apiAdminMock = $this->getMockBuilder('\Api_Admin')->getMock();
         $apiAdminMock->expects($this->once())
-            ->method('servicedownloadable_send_file')
-            ->with(['id' => $productId])
-            ->willThrowException(new \FOSSBilling\Exception('Product not found'));
+            ->method('send_file')
+            ->with(['id' => 0])
+            ->willThrowException(new \FOSSBilling\Exception('Product ID is missing'));
 
         $this->di['api_admin'] = $apiAdminMock;
 
         $this->expectException(\FOSSBilling\Exception::class);
-        $this->expectExceptionMessage('Product not found');
+        $this->expectExceptionMessage('Product ID is missing');
 
         $this->controller->get_download($this->app, $productId);
     }
@@ -168,8 +168,8 @@ class AdminTest extends \BBTestCase
         // Mock API admin that will throw exception
         $apiAdminMock = $this->getMockBuilder('\Api_Admin')->getMock();
         $apiAdminMock->expects($this->once())
-            ->method('servicedownloadable_send_file')
-            ->with(['id' => $productId])
+            ->method('send_file')
+            ->with(['id' => -1])
             ->willThrowException(new \FOSSBilling\Exception('Product not found'));
 
         $this->di['api_admin'] = $apiAdminMock;
@@ -205,7 +205,7 @@ class AdminTest extends \BBTestCase
         // Mock API admin that will throw exception
         $apiAdminMock = $this->getMockBuilder('\Api_Admin')->getMock();
         $apiAdminMock->expects($this->once())
-            ->method('servicedownloadable_send_file')
+            ->method('send_file')
             ->with(['id' => $productId])
             ->willThrowException(new \FOSSBilling\Exception('Product not found'));
 

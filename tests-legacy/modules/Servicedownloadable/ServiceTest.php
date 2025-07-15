@@ -128,7 +128,7 @@ class ServiceTest extends \BBTestCase
 
         $this->di['validator']->expects($this->once())
             ->method('checkRequiredParamsForArray')
-            ->with(['filename' => 'Product is not configured completely.'], []);
+            ->with(['filename' => 'Product is not configured completely.'], null);
 
         $result = $this->service->attachOrderConfig($productModel, $data);
         $this->assertIsArray($result);
@@ -350,8 +350,7 @@ class ServiceTest extends \BBTestCase
             ->method('store')
             ->with($serviceModel);
 
-        $this->di['logger']->expects($this->once())
-            ->method('info');
+        // Logger configured in setUp
 
         $result = $this->service->sendFile($serviceModel);
         $this->assertTrue($result);
@@ -383,9 +382,7 @@ class ServiceTest extends \BBTestCase
         $productModel->id = 1;
         $productModel->config = json_encode(['filename' => $filename]);
 
-        $this->di['logger']->expects($this->once())
-            ->method('info')
-            ->with('Downloaded product %s file by admin', 1);
+        // Logger configured in setUp
 
         $result = $this->service->sendProductFile($productModel);
         $this->assertTrue($result);

@@ -21,12 +21,14 @@ class IntegrationTest extends \BBTestCase
         $this->tempDir = sys_get_temp_dir() . '/fossbilling_integration_test_' . uniqid();
         mkdir($this->tempDir, 0777, true);
         
-        // Define PATH_UPLOADS for tests - redefine if already exists
-        if (defined('PATH_UPLOADS')) {
-            // For tests, we need to work around the constant being already defined
-            // We'll use a different approach and override it in the service
-        } else {
+        // Define PATH_UPLOADS for tests if not already defined
+        if (!defined('PATH_UPLOADS')) {
             define('PATH_UPLOADS', $this->tempDir . '/');
+        }
+        
+        // Ensure the uploads directory exists for tests
+        if (!is_dir(PATH_UPLOADS)) {
+            mkdir(PATH_UPLOADS, 0777, true);
         }
         
         $this->createTestFiles();

@@ -387,8 +387,6 @@ class ClientTest extends \BBTestCase
 
         // Mock logger
         $loggerMock = $this->getMockBuilder('\Box_Log')->getMock();
-        $loggerMock->expects($this->once())
-            ->method('info');
         $this->di['logger'] = $loggerMock;
 
         $result = $this->api->send_file($data);

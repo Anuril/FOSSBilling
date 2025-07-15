@@ -211,7 +211,6 @@ class Service implements InjectionAwareInterface
                 $serviceDownloadable->filename = $fileName;
                 $serviceDownloadable->updated_at = date('Y-m-d H:i:s');
                 $this->di['db']->store($serviceDownloadable);
-                
             }
         }
 
